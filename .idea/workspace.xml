@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5d66f6eb-7cc0-4715-8c75-734113f60cf0" name="Default" comment="" />
+    <list default="true" id="5d66f6eb-7cc0-4715-8c75-734113f60cf0" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/Shop.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/FancyShop.java" afterPath="$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/FancyShop.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
     <ignored path="FancyShop.iws" />
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380574614446" ignored="false" />
     <file path="/plugin.yml" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380574769007" ignored="false" />
+    <file path="/FancyShop.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380577530111" ignored="false" />
+    <file path="/fragment.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380575075503" ignored="false" />
+    <file path="/Shop.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380577830961" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +76,7 @@
       <file leaf-file-name="FancyShop.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/FancyShop.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="0" selection-start="629" selection-end="629" vertical-scroll-proportion="0.0">
+            <state line="27" column="41" selection-start="1075" selection-end="1075" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -77,10 +84,22 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="plugin.yml" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Shop.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/Shop.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="72" column="47" selection-start="2447" selection-end="2447" vertical-scroll-proportion="0.7613636">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1267#1275#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="plugin.yml" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="3" column="35" selection-start="129" selection-end="129" vertical-scroll-proportion="0.051136363">
+            <state line="3" column="35" selection-start="129" selection-end="129" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -104,8 +123,9 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/FancyShop.java" />
         <option value="$PROJECT_DIR$/src/main/resources/plugin.yml" />
+        <option value="$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/FancyShop.java" />
+        <option value="$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/Shop.java" />
       </list>
     </option>
   </component>
@@ -221,11 +241,17 @@
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
+    <property name="OverrideImplement.combined" value="true" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="MemberChooser.copyJavadoc" value="false" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="net.miscjunk.fancyshop" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
@@ -417,19 +443,29 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="35" selection-start="129" selection-end="129" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/FancyShop.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="0" selection-start="629" selection-end="629" vertical-scroll-proportion="0.0">
+        <state line="27" column="41" selection-start="1075" selection-end="1075" vertical-scroll-proportion="0.0">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/Shop.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="35" selection-start="129" selection-end="129" vertical-scroll-proportion="0.051136363">
-          <folding />
+        <state line="72" column="47" selection-start="2447" selection-end="2447" vertical-scroll-proportion="0.7613636">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1267#1275#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
