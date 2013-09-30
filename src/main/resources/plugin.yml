@@ -1,0 +1,7 @@
+author: DeltaWhy
+database: false
+generator: http://dinnerbone.com/minecraft/tools/pluginator/
+main: net.miscjunk.fancyshop.FancyShop
+name: FancyShop
+startup: postworld
+version: '0.1'
