@@ -12,16 +12,12 @@ import java.util.regex.Pattern;
 public class Deal {
     private ItemStack item;
     private int available;
-    private ItemStack price;
+    private int buying;
+    private ItemStack buyPrice;
+    private ItemStack sellPrice;
 
-    public Deal(ItemStack item, int available, String price) {
-        this(item, available, priceToItem(price));
-    }
-    public Deal(ItemStack item, String price) {
-        this(item, priceToItem(price));
-    }
-    public Deal(ItemStack item, ItemStack price) {
-        this(item, 0, price);
+    public Deal(ItemStack item, String buyPrice, String sellPrice) {
+        this(item, priceToItem(buyPrice), priceToItem(sellPrice));
     }
     private static ItemStack priceToItem(String price) {
         // TODO - configurable currencies
@@ -60,19 +56,33 @@ public class Deal {
         }
     }
 
-    public Deal(ItemStack item, int available, ItemStack price) {
+    public Deal(ItemStack item, ItemStack buyPrice, ItemStack sellPrice) {
         this.item = item;
-        this.available = available;
-        this.price = price;
+        this.available = 0;
+        this.buying = 0;
+        this.buyPrice = buyPrice;
+        this.sellPrice = sellPrice;
     }
 
     public List<String> toLore() {
         List<String> lore = new ArrayList<String>();
-        lore.add(""+ChatColor.RESET+ChatColor.GREEN+itemToPrice(price));
-        if (available > 0) {
-            lore.add(""+available+" in stock");
-        } else {
-            lore.add(""+ChatColor.RED+"Out of stock!");
+        if (buyPrice != null)
+            lore.add(""+ChatColor.RESET+ChatColor.GREEN+"Buy: "+itemToPrice(buyPrice));
+        if (sellPrice != null)
+            lore.add(""+ChatColor.RESET+ChatColor.BLUE+"Sell: "+itemToPrice(sellPrice));
+        if (buyPrice != null) {
+            if (available > 0) {
+                lore.add(""+available+" in stock");
+            } else {
+                lore.add(""+ChatColor.RED+"Out of stock!");
+            }
+        }
+        if (sellPrice != null) {
+            if (buying > 0) {
+                lore.add("Buying "+buying);
+            } else {
+                lore.add("Not buying");
+            }
         }
         return lore;
     }
@@ -81,8 +91,12 @@ public class Deal {
         return item;
     }
 
-    public ItemStack getPrice() {
-        return price;
+    public ItemStack getBuyPrice() {
+        return buyPrice;
+    }
+
+    public ItemStack getSellPrice() {
+        return sellPrice;
     }
 
     public int getAvailable() {
@@ -91,5 +105,13 @@ public class Deal {
 
     public void setAvailable(int available) {
         this.available = available;
+    }
+
+    public int getBuying() {
+        return buying;
+    }
+
+    public void setBuying(int buying) {
+        this.buying = buying;
     }
 }

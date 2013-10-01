@@ -1,7 +1,6 @@
 package net.miscjunk.fancyshop;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
@@ -11,7 +10,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -33,15 +31,15 @@ public class Shop implements InventoryHolder {
         viewInv = Bukkit.createInventory(this, 27, owner+"'s Shop");
         // TODO - custom deals
         deals = new ArrayList<Deal>();
-        deals.add(new Deal(new ItemStack(Material.COBBLESTONE, 64), new ItemStack(Material.EMERALD, 1)));
+        deals.add(new Deal(new ItemStack(Material.COBBLESTONE, 32), new ItemStack(Material.EMERALD, 1), new ItemStack(Material.IRON_INGOT, 1)));
         ItemStack bow = new ItemStack(Material.BOW);
         bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
-        deals.add(new Deal(bow, new ItemStack(Material.DIAMOND, 2)));
+        deals.add(new Deal(bow, new ItemStack(Material.DIAMOND, 2), null));
         ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
         EnchantmentStorageMeta meta = (EnchantmentStorageMeta)book.getItemMeta();
         meta.addStoredEnchant(Enchantment.ARROW_DAMAGE, 1, false);
         book.setItemMeta(meta);
-        deals.add(new Deal(book, new ItemStack(Material.DIAMOND, 1)));
+        deals.add(new Deal(book, new ItemStack(Material.DIAMOND, 1), null));
         refreshView();
     }
 
@@ -73,6 +71,12 @@ public class Shop implements InventoryHolder {
                         available += it2.getAmount();
                     }
                     deal.setAvailable(available);
+                    int currency = 0;
+                    sourceMap = sourceInv.all(deal.getSellPrice());
+                    for (ItemStack it2 : sourceMap.values()) {
+                        currency += it2.getAmount();
+                    }
+                    deal.setBuying(deal.getItem().getAmount() * currency/deal.getSellPrice().getAmount());
                     break;
                 }
             }
@@ -95,6 +99,12 @@ public class Shop implements InventoryHolder {
                 available += it.getAmount();
             }
             d.getValue().setAvailable(available);
+            int currency = 0;
+            sourceMap = sourceInv.all(d.getValue().getSellPrice());
+            for (ItemStack it : sourceMap.values()) {
+                currency += it.getAmount();
+            }
+            d.getValue().setBuying(d.getValue().getItem().getAmount() * currency/d.getValue().getSellPrice().getAmount());
             ItemStack view = viewInv.getItem(d.getKey());
             ItemMeta meta = view.getItemMeta();
             meta.setLore(d.getValue().toLore());
@@ -106,21 +116,27 @@ public class Shop implements InventoryHolder {
             // click in shop
             switch (event.getAction()) {
                 case SWAP_WITH_CURSOR:
-                    Bukkit.broadcastMessage("swap");
                     event.setCancelled(true);
                     Deal deal = dealMap.get(event.getSlot());
                     if (deal != null) {
-                        buy(event.getWhoClicked(), deal, event.getView());
+                        if (deal.getBuyPrice() != null && deal.getBuyPrice().isSimilar(event.getCursor())) {
+                            buy(event.getWhoClicked(), deal, event.getView());
+                        } else if (deal.getSellPrice() != null && deal.getItem().isSimilar(event.getCursor())) {
+                            sell(event.getWhoClicked(), deal, event.getView());
+                        }
                     } else {
                         Bukkit.broadcastMessage("No deal found");
                     }
                     break;
                 case MOVE_TO_OTHER_INVENTORY:
-                    Bukkit.broadcastMessage("shift-click");
                     event.setCancelled(true);
                     deal = dealMap.get(event.getSlot());
                     if (deal != null) {
-                        buyAll(event.getWhoClicked(), deal, event.getView());
+                        if (deal.getBuyPrice() != null && deal.getBuyPrice().isSimilar(event.getCursor())) {
+                            buyAll(event.getWhoClicked(), deal, event.getView());
+                        } else if (deal.getSellPrice() != null && deal.getItem().isSimilar(event.getCursor())) {
+                            sellAll(event.getWhoClicked(), deal, event.getView());
+                        }
                     } else {
                         Bukkit.broadcastMessage("No deal found");
                     }
@@ -132,11 +148,9 @@ public class Shop implements InventoryHolder {
             // click outside shop
             switch (event.getAction()) {
                 case COLLECT_TO_CURSOR:
-                    Bukkit.broadcastMessage("collect");
                     event.setCancelled(true);
                     break;
                 case MOVE_TO_OTHER_INVENTORY:
-                    Bukkit.broadcastMessage("move into");
                     if (event.getWhoClicked().getName().equalsIgnoreCase(owner)) {
                         event.setCancelled(true);
                     } else {
@@ -148,17 +162,67 @@ public class Shop implements InventoryHolder {
         }
     }
 
+    private void sellAll(HumanEntity whoClicked, Deal deal, InventoryView view) {
+        ItemStack cursor = view.getCursor();
+        while (deal.getItem().isSimilar(cursor) && deal.getItem().getAmount() <= cursor.getAmount()) {
+            if (!sell(whoClicked, deal, view)) break;
+        }
+    }
+
+
+    private boolean sell(HumanEntity whoClicked, Deal deal, InventoryView view) {
+        ItemStack cursor = view.getCursor();
+        if (deal.getItem().isSimilar(cursor)) {
+            if (deal.getItem().getAmount() > cursor.getAmount()) {
+                Bukkit.broadcastMessage("Not enough item");
+                return false;
+            } else {
+                if (!sourceInv.containsAtLeast(deal.getSellPrice(), deal.getSellPrice().getAmount())) {
+                    Bukkit.broadcastMessage("Out of money");
+                    return false;
+                } else {
+                    Bukkit.broadcastMessage("Selling");
+                    // try depositing item
+                    Map<Integer, ItemStack> overflow = sourceInv.addItem(deal.getItem().clone());
+                    if (!overflow.isEmpty()) {
+                        Bukkit.broadcastMessage("No room for item");
+                        sourceInv.removeItem(deal.getItem().clone());
+                        return false;
+                    }
+                    sourceInv.removeItem(deal.getSellPrice());
+                    cursor.setAmount(cursor.getAmount()-deal.getItem().getAmount());
+                    if (cursor.getAmount() == 0) {
+                        Bukkit.broadcastMessage("Placing in hand");
+                        view.setCursor(deal.getSellPrice().clone());
+                    } else {
+                        Bukkit.broadcastMessage("Placing in inventory");
+                        overflow = whoClicked.getInventory().addItem(deal.getSellPrice().clone());
+                        for (ItemStack it : overflow.values()) {
+                            Bukkit.broadcastMessage("Dropping");
+                            whoClicked.getWorld().dropItemNaturally(whoClicked.getLocation(), it);
+                        }
+                    }
+                    refreshDeals();
+                    return true;
+                }
+            }
+        } else {
+            Bukkit.broadcastMessage("Not holding item");
+            return false;
+        }
+    }
+
     private void buyAll(HumanEntity whoClicked, Deal deal, InventoryView view) {
         ItemStack cursor = view.getCursor();
-        while (deal.getPrice().isSimilar(cursor) && deal.getPrice().getAmount() <= cursor.getAmount()) {
+        while (deal.getBuyPrice().isSimilar(cursor) && deal.getBuyPrice().getAmount() <= cursor.getAmount()) {
             if (!buy(whoClicked, deal, view)) break;
         }
     }
 
     private boolean buy(HumanEntity whoClicked, Deal deal, InventoryView view) {
         ItemStack cursor = view.getCursor();
-        if (deal.getPrice().isSimilar(cursor)) {
-            if (deal.getPrice().getAmount() > cursor.getAmount()) {
+        if (deal.getBuyPrice().isSimilar(cursor)) {
+            if (deal.getBuyPrice().getAmount() > cursor.getAmount()) {
                 Bukkit.broadcastMessage("Not enough money");
                 return false;
             } else {
@@ -168,14 +232,14 @@ public class Shop implements InventoryHolder {
                 } else {
                     Bukkit.broadcastMessage("Buying");
                     // try depositing currency
-                    Map<Integer, ItemStack> overflow = sourceInv.addItem(deal.getPrice().clone());
+                    Map<Integer, ItemStack> overflow = sourceInv.addItem(deal.getBuyPrice().clone());
                     if (!overflow.isEmpty()) {
                         Bukkit.broadcastMessage("No room for currency");
-                        sourceInv.removeItem(deal.getPrice().clone());
+                        sourceInv.removeItem(deal.getBuyPrice().clone());
                         return false;
                     }
                     sourceInv.removeItem(deal.getItem());
-                    cursor.setAmount(cursor.getAmount()-deal.getPrice().getAmount());
+                    cursor.setAmount(cursor.getAmount()-deal.getBuyPrice().getAmount());
                     if (cursor.getAmount() == 0) {
                         Bukkit.broadcastMessage("Placing in hand");
                         view.setCursor(deal.getItem().clone());

@@ -10,10 +10,10 @@
     <ignored path=".idea/workspace.xml" />
     <file path="/Dummy.txt" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380601120895" ignored="false" />
     <file path="/plugin.yml" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380574769007" ignored="false" />
-    <file path="/FancyShop.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380577530111" ignored="false" />
+    <file path="/FancyShop.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380603014707" ignored="false" />
     <file path="/fragment.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380575075503" ignored="false" />
-    <file path="/Shop.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380600363161" ignored="false" />
-    <file path="/Deal.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380601086563" ignored="false" />
+    <file path="/Shop.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380605107420" ignored="false" />
+    <file path="/Deal.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380604856615" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +77,7 @@
       <file leaf-file-name="FancyShop.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/FancyShop.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="41" selection-start="1075" selection-end="1075" vertical-scroll-proportion="0.0">
+            <state line="14" column="0" selection-start="542" selection-end="542" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -86,7 +86,7 @@
       <file leaf-file-name="Shop.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/Shop.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="43" column="32" selection-start="1668" selection-end="1668" vertical-scroll-proportion="0.3197279">
+            <state line="117" column="38" selection-start="4760" selection-end="4760" vertical-scroll-proportion="0.8639456">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -97,7 +97,7 @@
       <file leaf-file-name="Deal.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/Deal.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="29" selection-start="645" selection-end="645" vertical-scroll-proportion="0.0">
+            <state line="79" column="24" selection-start="2959" selection-end="2959" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -500,26 +500,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="35" selection-start="129" selection-end="129" vertical-scroll-proportion="0.0" />
+        <state line="3" column="35" selection-start="129" selection-end="129" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/FancyShop.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="41" selection-start="1075" selection-end="1075" vertical-scroll-proportion="0.0">
+        <state line="14" column="0" selection-start="542" selection-end="542" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/Deal.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="29" selection-start="645" selection-end="645" vertical-scroll-proportion="0.0">
+        <state line="79" column="24" selection-start="2959" selection-end="2959" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/Shop.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="32" selection-start="1668" selection-end="1668" vertical-scroll-proportion="0.3197279">
+        <state line="117" column="38" selection-start="4760" selection-end="4760" vertical-scroll-proportion="0.8639456">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
