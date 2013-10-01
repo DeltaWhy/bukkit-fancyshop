@@ -35,8 +35,8 @@ public class FancyShop extends JavaPlugin implements Listener {
             if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.CHEST) {
                 event.setCancelled(true);
                 Shop shop = Shop.fromInventory(((InventoryHolder)event.getClickedBlock().getState()).getInventory(),
-                        "Herobrine");
-                shop.open(event.getPlayer());
+                        event.getPlayer().getName());
+                shop.edit(event.getPlayer());
             }
         }
     }
@@ -45,6 +45,8 @@ public class FancyShop extends JavaPlugin implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getInventory().getHolder() instanceof Shop) {
             ((Shop)event.getInventory().getHolder()).onInventoryClick(event);
+        } else if (event.getInventory().getHolder() instanceof ShopEditor) {
+            ((ShopEditor)event.getInventory().getHolder()).onInventoryClick(event);
         }
     }
 
@@ -52,6 +54,8 @@ public class FancyShop extends JavaPlugin implements Listener {
     public void onInventoryDrag(InventoryDragEvent event) {
         if (event.getInventory().getHolder() instanceof Shop) {
             ((Shop)event.getInventory().getHolder()).onInventoryDrag(event);
+        } else if (event.getInventory().getHolder() instanceof ShopEditor) {
+            ((ShopEditor)event.getInventory().getHolder()).onInventoryDrag(event);
         }
     }
 }

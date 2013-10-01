@@ -25,6 +25,7 @@ public class Shop implements InventoryHolder {
     String owner;
     List<Deal> deals;
     Map<Integer, Deal> dealMap;
+    ShopEditor editor;
 
     private Shop(Inventory inv, String owner) {
         this.owner = owner;
@@ -51,6 +52,11 @@ public class Shop implements InventoryHolder {
 
     public void open(Player player) {
         player.openInventory(viewInv);
+    }
+
+    public void edit(Player player) {
+        if (editor == null) editor = new ShopEditor(this);
+        player.openInventory(editor.viewInv);
     }
 
     public Inventory getInventory() {
@@ -145,14 +151,8 @@ public class Shop implements InventoryHolder {
             // click outside shop
             switch (event.getAction()) {
                 case COLLECT_TO_CURSOR:
-                    event.setCancelled(true);
-                    break;
                 case MOVE_TO_OTHER_INVENTORY:
-                    if (event.getWhoClicked().getName().equalsIgnoreCase(owner)) {
-                        event.setCancelled(true);
-                    } else {
-                        event.setCancelled(true);
-                    }
+                    event.setCancelled(true);
                     break;
                 default:
             }
