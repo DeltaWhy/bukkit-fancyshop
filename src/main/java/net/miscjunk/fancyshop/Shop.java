@@ -6,6 +6,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
@@ -108,7 +109,7 @@ public class Shop implements InventoryHolder {
         return count;
     }
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getRawSlot() < event.getInventory().getSize()) {
+        if (event.getRawSlot() >= 0 && event.getRawSlot() < event.getInventory().getSize()) {
             // click in shop
             switch (event.getAction()) {
                 case SWAP_WITH_CURSOR:
@@ -187,13 +188,14 @@ public class Shop implements InventoryHolder {
                     }
                     sourceInv.removeItem(deal.getSellPrice());
                     cursor.setAmount(cursor.getAmount()-deal.getItem().getAmount());
-                    if (cursor.getAmount() == 0) {
-                        Bukkit.broadcastMessage("Placing in hand");
-                        view.setCursor(deal.getSellPrice().clone());
-                    } else {
-                        Bukkit.broadcastMessage("Placing in inventory");
-                        overflow = whoClicked.getInventory().addItem(deal.getSellPrice().clone());
-                        for (ItemStack it : overflow.values()) {
+                    if (cursor.getAmount() == 0) view.setCursor(null);
+                    Bukkit.broadcastMessage("Placing in inventory");
+                    overflow = whoClicked.getInventory().addItem(deal.getSellPrice().clone());
+                    for (ItemStack it : overflow.values()) {
+                        if (cursor == null || cursor.getAmount() == 0) {
+                            Bukkit.broadcastMessage("Placing in hand");
+                            view.setCursor(it);
+                        } else {
                             Bukkit.broadcastMessage("Dropping");
                             whoClicked.getWorld().dropItemNaturally(whoClicked.getLocation(), it);
                         }
@@ -255,5 +257,16 @@ public class Shop implements InventoryHolder {
             Bukkit.broadcastMessage("Not holding currency");
             return false;
         }
+    }
+
+    public void onInventoryDrag(InventoryDragEvent event) {
+        boolean allow = true;
+        for (Integer i : event.getRawSlots()) {
+            if (i >= 0 && i < event.getInventory().getSize()) {
+                allow = false;
+                break;
+            }
+        }
+        event.setCancelled(!allow);
     }
 }

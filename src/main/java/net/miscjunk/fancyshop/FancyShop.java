@@ -51,7 +51,7 @@ public class FancyShop extends JavaPlugin implements Listener {
     @EventHandler
     public void onInventoryDrag(InventoryDragEvent event) {
         if (event.getInventory().getHolder() instanceof Shop) {
-            event.setCancelled(true);
+            ((Shop)event.getInventory().getHolder()).onInventoryDrag(event);
         }
     }
 }
