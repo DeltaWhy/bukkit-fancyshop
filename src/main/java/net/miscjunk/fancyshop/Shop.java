@@ -32,7 +32,7 @@ public class Shop implements InventoryHolder {
         // TODO - custom deals
         deals = new ArrayList<Deal>();
         deals.add(new Deal(new ItemStack(Material.COBBLESTONE, 64), new ItemStack(Material.EMERALD, 2), new ItemStack(Material.IRON_INGOT, 2)));
-        deals.add(new Deal(new ItemStack(Material.ENDER_PEARL, 64), new ItemStack(Material.EMERALD, 2), null));
+        deals.add(new Deal(new ItemStack(Material.ENDER_PEARL, 64), new ItemStack(351, 2, (short)4), null));
         ItemStack bow = new ItemStack(Material.BOW);
         bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
         deals.add(new Deal(bow, new ItemStack(Material.DIAMOND, 2), null));

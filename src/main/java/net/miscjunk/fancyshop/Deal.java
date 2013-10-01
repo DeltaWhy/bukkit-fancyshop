@@ -17,43 +17,7 @@ public class Deal {
     private ItemStack sellPrice;
 
     public Deal(ItemStack item, String buyPrice, String sellPrice) {
-        this(item, priceToItem(buyPrice), priceToItem(sellPrice));
-    }
-    private static ItemStack priceToItem(String price) {
-        // TODO - configurable currencies
-        try {
-            Pattern p = Pattern.compile("([^0-9\\s]*)([0-9]+)([^0-9\\s]*)");
-            Matcher m = p.matcher(price);
-            m.find();
-            String prefix = m.group(0);
-            int cost = Integer.parseInt(m.group(2));
-            String postfix = m.group(3);
-            if (!prefix.isEmpty() && !postfix.isEmpty()) {
-                throw new IllegalArgumentException("Can't have both prefix and postfix for currency");
-            } else if (prefix.isEmpty() && postfix.isEmpty()) {
-                throw new IllegalArgumentException("Must specify a currency");
-            } else if (!prefix.isEmpty()) {
-                throw new IllegalArgumentException("Unknown currency");
-            } else if (!postfix.isEmpty()) {
-                if (postfix.equals("E")) {
-                    return new ItemStack(Material.EMERALD, cost);
-                } else {
-                    throw new IllegalArgumentException("Unknown currency");
-                }
-            } else {
-                throw new IllegalArgumentException("Unknown currency");
-            }
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Unknown currency");
-        }
-    }
-    private static String itemToPrice(ItemStack item) {
-        // TODO - configurable currencies
-        if (item.getType() == Material.EMERALD) {
-            return item.getAmount()+"E";
-        } else {
-            return item.getAmount() + " " + item.getType();
-        }
+        this(item, Util.priceToItem(buyPrice), Util.priceToItem(sellPrice));
     }
 
     public Deal(ItemStack item, ItemStack buyPrice, ItemStack sellPrice) {
@@ -67,9 +31,9 @@ public class Deal {
     public List<String> toLore() {
         List<String> lore = new ArrayList<String>();
         if (buyPrice != null)
-            lore.add(""+ChatColor.RESET+ChatColor.GREEN+"Buy: "+itemToPrice(buyPrice));
+            lore.add(""+ChatColor.RESET+ChatColor.GREEN+"Buy: "+Util.itemToPrice(buyPrice));
         if (sellPrice != null)
-            lore.add(""+ChatColor.RESET+ChatColor.BLUE+"Sell: "+itemToPrice(sellPrice));
+            lore.add(""+ChatColor.RESET+ChatColor.BLUE+"Sell: "+Util.itemToPrice(sellPrice));
         if (buyPrice != null) {
             if (available > 0) {
                 lore.add(""+available+" in stock");
