@@ -31,11 +31,12 @@ public class Shop implements InventoryHolder {
         viewInv = Bukkit.createInventory(this, 27, owner+"'s Shop");
         // TODO - custom deals
         deals = new ArrayList<Deal>();
-        deals.add(new Deal(new ItemStack(Material.COBBLESTONE, 32), new ItemStack(Material.EMERALD, 2), new ItemStack(Material.IRON_INGOT, 2)));
+        deals.add(new Deal(new ItemStack(Material.COBBLESTONE, 64), new ItemStack(Material.EMERALD, 2), new ItemStack(Material.IRON_INGOT, 2)));
+        deals.add(new Deal(new ItemStack(Material.ENDER_PEARL, 64), new ItemStack(Material.EMERALD, 2), null));
         ItemStack bow = new ItemStack(Material.BOW);
         bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
         deals.add(new Deal(bow, new ItemStack(Material.DIAMOND, 2), null));
-        ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+        ItemStack book = new ItemStack(Material.ENCHANTED_BOOK, 2);
         EnchantmentStorageMeta meta = (EnchantmentStorageMeta)book.getItemMeta();
         meta.addStoredEnchant(Enchantment.ARROW_DAMAGE, 1, false);
         book.setItemMeta(meta);
@@ -63,11 +64,13 @@ public class Shop implements InventoryHolder {
             if (it == null) continue;
             Deal deal = null;
             for (Deal d : deals) {
-                if (d.getItem().isSimilar(it) || ((d.getSellPrice() != null) && d.getSellPrice().isSimilar(it))) { //&& sourceInv.containsAtLeast(d.getItem(), d.getItem().getAmount())) {
+                if (d.getItem().isSimilar(it) || ((d.getSellPrice() != null) && d.getSellPrice().isSimilar(it))) {
                     deal = d;
                     deal.setAvailable(countItems(sourceInv, deal.getItem()));
-                    int currency = countItems(sourceInv, deal.getSellPrice());
-                    deal.setBuying(deal.getItem().getAmount() * currency/deal.getSellPrice().getAmount());
+                    if (deal.getSellPrice() != null) {
+                        int currency = countItems(sourceInv, deal.getSellPrice());
+                        deal.setBuying(deal.getItem().getAmount() * currency/deal.getSellPrice().getAmount());
+                    }
                     break;
                 }
             }
@@ -86,8 +89,10 @@ public class Shop implements InventoryHolder {
         for (Map.Entry<Integer, Deal> d : dealMap.entrySet()) {
             Deal deal = d.getValue();
             deal.setAvailable(countItems(sourceInv, deal.getItem()));
-            int currency = countItems(sourceInv, deal.getSellPrice());
-            deal.setBuying(deal.getItem().getAmount() * currency/deal.getSellPrice().getAmount());
+            if (deal.getSellPrice() != null) {
+                int currency = countItems(sourceInv, deal.getSellPrice());
+                deal.setBuying(deal.getItem().getAmount() * currency/deal.getSellPrice().getAmount());
+            }
             ItemStack view = viewInv.getItem(d.getKey());
             ItemMeta meta = view.getItemMeta();
             meta.setLore(deal.toLore());

@@ -7,11 +7,11 @@
     </list>
     <ignored path="FancyShop.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380601120895" ignored="false" />
+    <file path="/Dummy.txt" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380607588346" ignored="false" />
     <file path="/plugin.yml" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380574769007" ignored="false" />
     <file path="/FancyShop.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380603014707" ignored="false" />
     <file path="/fragment.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380575075503" ignored="false" />
-    <file path="/Shop.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380606375721" ignored="false" />
+    <file path="/Shop.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380608217014" ignored="false" />
     <file path="/Deal.java" changelist="5d66f6eb-7cc0-4715-8c75-734113f60cf0" time="1380604856615" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -85,7 +85,7 @@
       <file leaf-file-name="Shop.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/Shop.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="92" column="24" selection-start="3759" selection-end="3759" vertical-scroll-proportion="0.5782313">
+            <state line="78" column="52" selection-start="3160" selection-end="3160" vertical-scroll-proportion="0.17006803">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -165,6 +165,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -233,14 +235,12 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="OverrideImplement.combined" value="true" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="OverrideImplement.combined" value="true" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
@@ -264,19 +264,6 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
-      <method />
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
@@ -304,6 +291,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -460,6 +460,29 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/FancyShop.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state line="14" column="0" selection-start="542" selection-end="542" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/Shop.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="35" selection-start="997" selection-end="997" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/Deal.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="79" column="24" selection-start="2959" selection-end="2959" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/FancyShop.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state line="27" column="41" selection-start="1075" selection-end="1075" vertical-scroll-proportion="0.0">
           <folding />
         </state>
@@ -499,9 +522,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/plugin.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="35" selection-start="129" selection-end="129" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="3" column="35" selection-start="129" selection-end="129" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/FancyShop.java">
@@ -520,7 +541,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/net/miscjunk/fancyshop/Shop.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="92" column="24" selection-start="3759" selection-end="3759" vertical-scroll-proportion="0.5782313">
+        <state line="78" column="52" selection-start="3160" selection-end="3160" vertical-scroll-proportion="0.17006803">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
