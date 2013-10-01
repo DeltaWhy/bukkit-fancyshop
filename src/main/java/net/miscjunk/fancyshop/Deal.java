@@ -28,11 +28,20 @@ public class Deal {
         this.sellPrice = sellPrice;
     }
 
+    public void setBuyPrice(ItemStack buyPrice) {
+        this.buyPrice = buyPrice;
+    }
+
+    public void setSellPrice(ItemStack sellPrice) {
+        this.sellPrice = sellPrice;
+    }
+
     public List<String> toLore() {
         List<String> lore = new ArrayList<String>();
         if (buyPrice != null)
             lore.add(""+ChatColor.RESET+ChatColor.GREEN+"Buy: "+Util.itemToPrice(buyPrice));
         if (sellPrice != null)
+
             lore.add(""+ChatColor.RESET+ChatColor.BLUE+"Sell: "+Util.itemToPrice(sellPrice));
         if (buyPrice != null) {
             if (available > 0) {

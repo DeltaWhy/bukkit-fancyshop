@@ -54,4 +54,11 @@ public class Util {
         sb.deleteCharAt(sb.length()-1);
         return sb.toString();
     }
+
+    public static boolean isCurrency(ItemStack item) {
+        // TODO - configurable currencies
+        if (item.hasItemMeta()) return false;
+        if (item.getData().getData() != 0) return false;
+        return true;
+    }
 }

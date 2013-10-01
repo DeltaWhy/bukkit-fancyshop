@@ -138,6 +138,10 @@ public class ShopEditor implements InventoryHolder {
                         Deal d = dealMap.get(event.getRawSlot());
                         if (d != null && d.getItem().isSimilar(cursor)) {
                             editDealAmount(d, cursor);
+                        } else if (d != null && state == State.BUY) {
+                            editBuyPrice(d, cursor);
+                        } else if (d != null && state == State.SELL) {
+                            editSellPrice(d, cursor);
                         }
                     }
                     event.setCancelled(true);
@@ -178,6 +182,22 @@ public class ShopEditor implements InventoryHolder {
                     break;
                 default:
             }
+        }
+    }
+
+    private void editBuyPrice(Deal deal, ItemStack item) {
+        if (Util.isCurrency(item)) {
+            deal.setBuyPrice(item.clone());
+            shop.refreshView();
+            changeState(state);
+        }
+    }
+
+    private void editSellPrice(Deal deal, ItemStack item) {
+        if (Util.isCurrency(item)) {
+            deal.setSellPrice(item.clone());
+            shop.refreshView();
+            changeState(state);
         }
     }
 
