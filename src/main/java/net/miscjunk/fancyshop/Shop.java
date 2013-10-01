@@ -3,6 +3,7 @@ package net.miscjunk.fancyshop;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -10,6 +11,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
@@ -30,7 +33,15 @@ public class Shop implements InventoryHolder {
         viewInv = Bukkit.createInventory(this, 27, owner+"'s Shop");
         // TODO - custom deals
         deals = new ArrayList<Deal>();
-        deals.add(new Deal(new ItemStack(Material.COBBLESTONE, 64), 640, new ItemStack(Material.EMERALD, 1)));
+        deals.add(new Deal(new ItemStack(Material.COBBLESTONE, 64), new ItemStack(Material.EMERALD, 1)));
+        ItemStack bow = new ItemStack(Material.BOW);
+        bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
+        deals.add(new Deal(bow, new ItemStack(Material.DIAMOND, 2)));
+        ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+        EnchantmentStorageMeta meta = (EnchantmentStorageMeta)book.getItemMeta();
+        meta.addStoredEnchant(Enchantment.ARROW_DAMAGE, 1, false);
+        book.setItemMeta(meta);
+        deals.add(new Deal(book, new ItemStack(Material.DIAMOND, 1)));
         refreshView();
     }
 
@@ -48,29 +59,46 @@ public class Shop implements InventoryHolder {
 
     public void refreshView() {
         dealMap = new HashMap<Integer, Deal>();
-        for (int i=0; i < sourceInv.getSize() && i < viewInv.getSize(); i++) {
+        viewInv.clear();
+        for (int i=0, j=0; i < sourceInv.getSize() && j < viewInv.getSize(); i++) {
             ItemStack it = sourceInv.getItem(i);
             if (it == null) continue;
-            it = it.clone();
             Deal deal = null;
             for (Deal d : deals) {
-                if (d.getItem().isSimilar(it)) {
+                if (d.getItem().isSimilar(it) && sourceInv.containsAtLeast(d.getItem(), d.getItem().getAmount())) {
                     deal = d;
+                    int available = 0;
+                    Map<Integer, ? extends ItemStack> sourceMap = sourceInv.all(deal.getItem());
+                    for (ItemStack it2 : sourceMap.values()) {
+                        available += it2.getAmount();
+                    }
+                    deal.setAvailable(available);
                     break;
                 }
             }
-            List<String> lore;
-            if (deal != null) {
-                lore = deal.toLore();
-                dealMap.put(i, deal);
-            } else {
-                lore = new ArrayList<String>();
-                lore.add(ChatColor.COLOR_CHAR+"r"+"Shop Item");
-            }
-            ItemMeta meta = it.getItemMeta();
+            if (deal == null || dealMap.containsValue(deal)) continue;
+            List<String> lore = deal.toLore();
+            ItemStack view = deal.getItem().clone();
+            ItemMeta meta = view.getItemMeta();
             meta.setLore(lore);
-            it.setItemMeta(meta);
-            viewInv.setItem(i, it);
+            view.setItemMeta(meta);
+            dealMap.put(j, deal);
+            viewInv.setItem(j, view);
+            j++;
+        }
+    }
+    public void refreshDeals() {
+        for (Map.Entry<Integer, Deal> d : dealMap.entrySet()) {
+            int available = 0;
+            Map<Integer, ? extends ItemStack> sourceMap = sourceInv.all(d.getValue().getItem());
+            for (ItemStack it : sourceMap.values()) {
+                available += it.getAmount();
+            }
+            d.getValue().setAvailable(available);
+            ItemStack view = viewInv.getItem(d.getKey());
+            ItemMeta meta = view.getItemMeta();
+            meta.setLore(d.getValue().toLore());
+            view.setItemMeta(meta);
         }
     }
     public void onInventoryClick(InventoryClickEvent event) {
@@ -159,6 +187,7 @@ public class Shop implements InventoryHolder {
                             whoClicked.getWorld().dropItemNaturally(whoClicked.getLocation(), it);
                         }
                     }
+                    refreshDeals();
                     return true;
                 }
             }

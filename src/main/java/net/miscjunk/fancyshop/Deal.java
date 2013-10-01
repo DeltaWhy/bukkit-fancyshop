@@ -17,6 +17,12 @@ public class Deal {
     public Deal(ItemStack item, int available, String price) {
         this(item, available, priceToItem(price));
     }
+    public Deal(ItemStack item, String price) {
+        this(item, priceToItem(price));
+    }
+    public Deal(ItemStack item, ItemStack price) {
+        this(item, 0, price);
+    }
     private static ItemStack priceToItem(String price) {
         // TODO - configurable currencies
         try {
@@ -63,7 +69,11 @@ public class Deal {
     public List<String> toLore() {
         List<String> lore = new ArrayList<String>();
         lore.add(""+ChatColor.RESET+ChatColor.GREEN+itemToPrice(price));
-        lore.add(""+available+" in stock");
+        if (available > 0) {
+            lore.add(""+available+" in stock");
+        } else {
+            lore.add(""+ChatColor.RED+"Out of stock!");
+        }
         return lore;
     }
 
@@ -73,5 +83,13 @@ public class Deal {
 
     public ItemStack getPrice() {
         return price;
+    }
+
+    public int getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(int available) {
+        this.available = available;
     }
 }
