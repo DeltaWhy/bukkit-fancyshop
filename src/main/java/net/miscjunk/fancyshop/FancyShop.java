@@ -1,15 +1,13 @@
 package net.miscjunk.fancyshop;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -56,6 +54,13 @@ public class FancyShop extends JavaPlugin implements Listener {
             ((Shop)event.getInventory().getHolder()).onInventoryDrag(event);
         } else if (event.getInventory().getHolder() instanceof ShopEditor) {
             ((ShopEditor)event.getInventory().getHolder()).onInventoryDrag(event);
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        if (Shop.isShop(event.getInventory())) {
+            Shop.fromInventory(event.getInventory(),"").refreshView();
         }
     }
 }

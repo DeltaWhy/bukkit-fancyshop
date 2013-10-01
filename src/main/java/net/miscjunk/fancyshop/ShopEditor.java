@@ -3,11 +3,11 @@ package net.miscjunk.fancyshop;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -120,7 +120,6 @@ public class ShopEditor implements InventoryHolder {
         }
     }
 
-
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getRawSlot() >= 0 && event.getRawSlot() < LAST_DEAL) {
             // click in shop
@@ -142,6 +141,18 @@ public class ShopEditor implements InventoryHolder {
                             editBuyPrice(d, cursor);
                         } else if (d != null && state == State.SELL) {
                             editSellPrice(d, cursor);
+                        }
+                    }
+                    event.setCancelled(true);
+                    break;
+                case PLACE_ALL:
+                case PLACE_ONE:
+                    if (state != State.REMOVE) {
+                        Deal d = dealMap.get(event.getRawSlot());
+                        if (d == null) {
+                            ItemStack it = event.getCursor().clone();
+                            if (event.getAction() == InventoryAction.PLACE_ONE) it.setAmount(1);
+                            addDeal(it);
                         }
                     }
                     event.setCancelled(true);
@@ -183,6 +194,15 @@ public class ShopEditor implements InventoryHolder {
                 default:
             }
         }
+    }
+
+    private void addDeal(ItemStack item) {
+        int slot = viewInv.firstEmpty();
+        if (slot > LAST_DEAL) return;
+        Deal d = new Deal(item);
+        shop.deals.add(d);
+        shop.refreshView();
+        changeState(state);
     }
 
     private void editBuyPrice(Deal deal, ItemStack item) {

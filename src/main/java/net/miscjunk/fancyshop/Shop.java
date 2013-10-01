@@ -27,6 +27,8 @@ public class Shop implements InventoryHolder {
     Map<Integer, Deal> dealMap;
     ShopEditor editor;
 
+    static Shop theShop;
+
     private Shop(Inventory inv, String owner) {
         this.owner = owner;
         sourceInv = inv;
@@ -47,7 +49,12 @@ public class Shop implements InventoryHolder {
     }
 
     public static Shop fromInventory(Inventory inv, String owner) {
-        return new Shop(inv, owner);
+        if (theShop == null) theShop = new Shop(inv, owner);
+        return theShop;
+    }
+
+    public static boolean isShop(Inventory inv) {
+        return (theShop != null && theShop.sourceInv.getHolder().equals(inv.getHolder()));
     }
 
     public void open(Player player) {
@@ -65,6 +72,7 @@ public class Shop implements InventoryHolder {
 
     public void refreshView() {
         dealMap = new HashMap<Integer, Deal>();
+        refreshDeals();
         viewInv.clear();
         for (int i=0, j=0; i < sourceInv.getSize() && j < viewInv.getSize(); i++) {
             ItemStack it = sourceInv.getItem(i);
@@ -73,11 +81,6 @@ public class Shop implements InventoryHolder {
             for (Deal d : deals) {
                 if (d.getItem().isSimilar(it) || ((d.getSellPrice() != null) && d.getSellPrice().isSimilar(it))) {
                     deal = d;
-                    deal.setAvailable(countItems(sourceInv, deal.getItem()));
-                    if (deal.getSellPrice() != null) {
-                        int currency = countItems(sourceInv, deal.getSellPrice());
-                        deal.setBuying(deal.getItem().getAmount() * currency/deal.getSellPrice().getAmount());
-                    }
                     break;
                 }
             }
@@ -92,18 +95,27 @@ public class Shop implements InventoryHolder {
             j++;
         }
     }
+
     public void refreshDeals() {
-        for (Map.Entry<Integer, Deal> d : dealMap.entrySet()) {
-            Deal deal = d.getValue();
+        for (Deal deal : deals) {
             deal.setAvailable(countItems(sourceInv, deal.getItem()));
             if (deal.getSellPrice() != null) {
                 int currency = countItems(sourceInv, deal.getSellPrice());
                 deal.setBuying(deal.getItem().getAmount() * currency/deal.getSellPrice().getAmount());
             }
-            ItemStack view = viewInv.getItem(d.getKey());
-            ItemMeta meta = view.getItemMeta();
-            meta.setLore(deal.toLore());
-            view.setItemMeta(meta);
+            int i = -1;
+            for (Map.Entry<Integer,Deal> e : dealMap.entrySet()) {
+                if (e.getValue() == deal) {
+                    i = e.getKey();
+                    break;
+                }
+            }
+            if (i != -1) {
+                ItemStack view = viewInv.getItem(i);
+                ItemMeta meta = view.getItemMeta();
+                meta.setLore(deal.toLore());
+                view.setItemMeta(meta);
+            }
         }
     }
 
