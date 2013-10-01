@@ -139,6 +139,13 @@ public class Shop implements InventoryHolder {
                     return false;
                 } else {
                     Bukkit.broadcastMessage("Buying");
+                    // try depositing currency
+                    Map<Integer, ItemStack> overflow = sourceInv.addItem(deal.getPrice().clone());
+                    if (!overflow.isEmpty()) {
+                        Bukkit.broadcastMessage("No room for currency");
+                        sourceInv.removeItem(deal.getPrice().clone());
+                        return false;
+                    }
                     sourceInv.removeItem(deal.getItem());
                     cursor.setAmount(cursor.getAmount()-deal.getPrice().getAmount());
                     if (cursor.getAmount() == 0) {
@@ -146,7 +153,7 @@ public class Shop implements InventoryHolder {
                         view.setCursor(deal.getItem().clone());
                     } else {
                         Bukkit.broadcastMessage("Placing in inventory");
-                        Map<Integer, ItemStack> overflow = whoClicked.getInventory().addItem(deal.getItem().clone());
+                        overflow = whoClicked.getInventory().addItem(deal.getItem().clone());
                         for (ItemStack it : overflow.values()) {
                             Bukkit.broadcastMessage("Dropping");
                             whoClicked.getWorld().dropItemNaturally(whoClicked.getLocation(), it);
