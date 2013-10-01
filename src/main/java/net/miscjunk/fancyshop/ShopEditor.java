@@ -7,6 +7,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -34,7 +35,7 @@ public class ShopEditor implements InventoryHolder {
         this.state = State.BUY;
         viewInv = Bukkit.createInventory(this, 36, "Manage Shop");
         buyBtn = new ItemStack(Material.WOOL, 1, (short)5); //green
-        sellBtn = new ItemStack(Material.WOOL, 1, (short)3); //blue
+        sellBtn = new ItemStack(Material.WOOL, 1, (short)11); //blue
         removeBtn = new ItemStack(Material.FIRE, 1);
         doneBtn = new ItemStack(Material.WOOL, 1, (short)5);
 
@@ -110,10 +111,37 @@ public class ShopEditor implements InventoryHolder {
         return viewInv;
     }
 
+    private void removeDeal(int slot) {
+        Deal d = dealMap.get(slot);
+        if (d != null) {
+            shop.deals.remove(d);
+            shop.refreshView();
+            viewInv.setItem(slot, null);
+        }
+    }
+
+
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getRawSlot() >= 0 && event.getRawSlot() < LAST_DEAL) {
             // click in shop
             switch (event.getAction()) {
+                case PICKUP_ALL:
+                case PICKUP_HALF:
+                case PICKUP_ONE:
+                case PICKUP_SOME:
+                    if (state == State.REMOVE) removeDeal(event.getRawSlot());
+                    event.setCancelled(true);
+                    break;
+                case SWAP_WITH_CURSOR:
+                    ItemStack cursor = event.getCursor();
+                    if (state != State.REMOVE) {
+                        Deal d = dealMap.get(event.getRawSlot());
+                        if (d != null && d.getItem().isSimilar(cursor)) {
+                            editDealAmount(d, cursor);
+                        }
+                    }
+                    event.setCancelled(true);
+                    break;
                 default:
                     event.setCancelled(true);
             }
@@ -151,6 +179,12 @@ public class ShopEditor implements InventoryHolder {
                 default:
             }
         }
+    }
+
+    private void editDealAmount(Deal deal, ItemStack item) {
+        deal.getItem().setAmount(item.getAmount());
+        shop.refreshView();
+        changeState(state);
     }
 
     public void onInventoryDrag(InventoryDragEvent event) {
