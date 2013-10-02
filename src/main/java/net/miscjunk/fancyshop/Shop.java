@@ -74,34 +74,32 @@ public class Shop implements InventoryHolder {
         dealMap = new HashMap<Integer, Deal>();
         refreshDeals();
         viewInv.clear();
-        for (int i=0, j=0; i < sourceInv.getSize() && j < viewInv.getSize(); i++) {
-            ItemStack it = sourceInv.getItem(i);
-            if (it == null) continue;
-            Deal deal = null;
-            for (Deal d : deals) {
-                if (d.getItem().isSimilar(it) || ((d.getSellPrice() != null) && d.getSellPrice().isSimilar(it))) {
-                    deal = d;
-                    break;
-                }
-            }
-            if (deal == null || dealMap.containsValue(deal)) continue;
+        int i = 0;
+        for (Deal deal : deals) {
+            if (deal.getAvailable() == 0 && deal.getBuying() == 0) continue;
             List<String> lore = deal.toLore();
             ItemStack view = deal.getItem().clone();
             ItemMeta meta = view.getItemMeta();
             meta.setLore(lore);
             view.setItemMeta(meta);
-            dealMap.put(j, deal);
-            viewInv.setItem(j, view);
-            j++;
+            dealMap.put(i, deal);
+            viewInv.setItem(i, view);
+            i++;
         }
     }
 
     public void refreshDeals() {
         for (Deal deal : deals) {
-            deal.setAvailable(countItems(sourceInv, deal.getItem()));
+            if (deal.getBuyPrice() != null) {
+                deal.setAvailable(countItems(sourceInv, deal.getItem()));
+            } else {
+                deal.setAvailable(0);
+            }
             if (deal.getSellPrice() != null) {
                 int currency = countItems(sourceInv, deal.getSellPrice());
                 deal.setBuying(deal.getItem().getAmount() * currency/deal.getSellPrice().getAmount());
+            } else {
+                deal.setBuying(0);
             }
             int i = -1;
             for (Map.Entry<Integer,Deal> e : dealMap.entrySet()) {
