@@ -1,7 +1,10 @@
 package net.miscjunk.fancyshop;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -27,7 +30,7 @@ public class Shop implements InventoryHolder {
     Map<Integer, Deal> dealMap;
     ShopEditor editor;
 
-    static Shop theShop;
+    static Map<ShopLocation, Shop> shopMap;
 
     private Shop(Inventory inv, String owner) {
         this.owner = owner;
@@ -49,12 +52,40 @@ public class Shop implements InventoryHolder {
     }
 
     public static Shop fromInventory(Inventory inv, String owner) {
-        if (theShop == null) theShop = new Shop(inv, owner);
-        return theShop;
+        if (shopMap == null) shopMap = new HashMap<ShopLocation, Shop>();
+        InventoryHolder h = inv.getHolder();
+        Bukkit.broadcastMessage(h.getClass().getSimpleName());
+        Location l;
+        if (h instanceof BlockState) {
+            l = ((BlockState)h).getLocation();
+        } else if (h instanceof DoubleChest) {
+            l = ((DoubleChest)h).getLocation();
+        } else {
+            return null;
+        }
+        ShopLocation loc = new ShopLocation(l);
+        if (shopMap.containsKey(loc)) {
+            return shopMap.get(loc);
+        } else {
+            Shop shop = new Shop(inv, owner);
+            shopMap.put(loc, shop);
+            return shop;
+        }
     }
 
     public static boolean isShop(Inventory inv) {
-        return (theShop != null && theShop.sourceInv.getHolder().equals(inv.getHolder()));
+        if (shopMap == null) return false;
+        InventoryHolder h = inv.getHolder();
+        Location l;
+        if (h instanceof BlockState) {
+            l = ((BlockState)h).getLocation();
+        } else if (h instanceof DoubleChest) {
+            l = ((DoubleChest)h).getLocation();
+        } else {
+            return false;
+        }
+        ShopLocation loc = new ShopLocation(l);
+        return shopMap.containsKey(loc);
     }
 
     public void open(Player player) {
