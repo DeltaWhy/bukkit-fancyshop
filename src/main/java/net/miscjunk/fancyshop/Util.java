@@ -1,6 +1,8 @@
 package net.miscjunk.fancyshop;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.regex.Matcher;
@@ -59,5 +61,23 @@ public class Util {
         if (item.hasItemMeta()) return false;
         if (item.getData().getData() != 0) return false;
         return true;
+    }
+
+    public static String itemToString(ItemStack item) {
+        YamlConfiguration c = new YamlConfiguration();
+        c.set("item", item);
+        return c.saveToString();
+    }
+
+    public static ItemStack stringToItem(String str) {
+        YamlConfiguration c = new YamlConfiguration();
+        try {
+            c.loadFromString(str);
+        } catch(InvalidConfigurationException e) {
+            return null;
+        }
+        Object o = c.get("item");
+        if (!(o instanceof ItemStack)) return null;
+        return (ItemStack)o;
     }
 }

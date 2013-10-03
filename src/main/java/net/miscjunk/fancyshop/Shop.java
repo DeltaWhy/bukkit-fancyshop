@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Shop implements InventoryHolder {
+    ShopLocation location;
     Inventory sourceInv;
     Inventory viewInv;
     String owner;
@@ -32,29 +33,19 @@ public class Shop implements InventoryHolder {
 
     static Map<ShopLocation, Shop> shopMap;
 
-    private Shop(Inventory inv, String owner) {
+    public Shop(ShopLocation location, Inventory inv, String owner) {
+        this.location = location;
         this.owner = owner;
         sourceInv = inv;
         viewInv = Bukkit.createInventory(this, 27, owner+"'s Shop");
         // TODO - custom deals
         deals = new ArrayList<Deal>();
-        deals.add(new Deal(new ItemStack(Material.COBBLESTONE, 64), new ItemStack(Material.EMERALD, 2), new ItemStack(Material.IRON_INGOT, 2)));
-        deals.add(new Deal(new ItemStack(Material.ENDER_PEARL, 64), new ItemStack(351, 2, (short)4), null));
-        ItemStack bow = new ItemStack(Material.BOW);
-        bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
-        deals.add(new Deal(bow, new ItemStack(Material.DIAMOND, 2), null));
-        ItemStack book = new ItemStack(Material.ENCHANTED_BOOK, 2);
-        EnchantmentStorageMeta meta = (EnchantmentStorageMeta)book.getItemMeta();
-        meta.addStoredEnchant(Enchantment.ARROW_DAMAGE, 1, false);
-        book.setItemMeta(meta);
-        deals.add(new Deal(book, new ItemStack(Material.DIAMOND, 1), null));
         refreshView();
     }
 
     public static Shop fromInventory(Inventory inv, String owner) {
         if (shopMap == null) shopMap = new HashMap<ShopLocation, Shop>();
         InventoryHolder h = inv.getHolder();
-        Bukkit.broadcastMessage(h.getClass().getSimpleName());
         Location l;
         if (h instanceof BlockState) {
             l = ((BlockState)h).getLocation();
@@ -67,14 +58,16 @@ public class Shop implements InventoryHolder {
         if (shopMap.containsKey(loc)) {
             return shopMap.get(loc);
         } else {
-            Shop shop = new Shop(inv, owner);
+            Shop shop = ShopRepository.load(loc, inv);
+            System.out.println(shop);
+            if (shop == null) shop = new Shop(loc, inv, owner);
             shopMap.put(loc, shop);
             return shop;
         }
     }
 
     public static boolean isShop(Inventory inv) {
-        if (shopMap == null) return false;
+        if (shopMap == null) shopMap = new HashMap<ShopLocation, Shop>();
         InventoryHolder h = inv.getHolder();
         Location l;
         if (h instanceof BlockState) {
@@ -85,7 +78,8 @@ public class Shop implements InventoryHolder {
             return false;
         }
         ShopLocation loc = new ShopLocation(l);
-        return shopMap.containsKey(loc);
+        if (shopMap.containsKey(loc)) return true;
+        return ShopRepository.load(loc, inv) == null;
     }
 
     public void open(Player player) {
@@ -99,6 +93,14 @@ public class Shop implements InventoryHolder {
 
     public Inventory getInventory() {
         return viewInv;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public ShopLocation getLocation() {
+        return location;
     }
 
     public void refreshView() {

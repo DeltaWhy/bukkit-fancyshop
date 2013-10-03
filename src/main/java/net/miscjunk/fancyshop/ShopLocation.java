@@ -49,4 +49,9 @@ public class ShopLocation {
     public int hashCode() {
         return (world+"x"+x+"y"+y+"z"+z).hashCode();
     }
+
+    @Override
+    public String toString() {
+        return ("block:"+world+"x"+x+"y"+y+"z"+z);
+    }
 }

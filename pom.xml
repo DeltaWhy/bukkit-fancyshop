@@ -21,6 +21,15 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>zip.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <dependencies>
@@ -30,6 +39,13 @@
             <version>1.6.2-R1.0</version>
             <type>jar</type>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>lib.PatPater</groupId>
+            <artifactId>SQLibrary</artifactId>
+            <version>6.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/SQLibrary.jar</systemPath>
         </dependency>
     </dependencies>
 </project>
