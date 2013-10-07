@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Hopper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,6 +18,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -145,6 +147,13 @@ public class FancyShop extends JavaPlugin implements Listener {
         if (shop.getOwner().equals(event.getPlayer().getName())) return; // we'll assume they know what they're doing
         event.setCancelled(true);
         Chat.e(event.getPlayer(), "You can't place that here.");
+    }
+
+    @EventHandler
+    public void onInventoryMove(InventoryMoveItemEvent event) {
+        if (!Shop.isShop(event.getSource())) return;
+        if (event.getInitiator().getHolder() instanceof Hopper) return; // allow hoppers to work because only the owner can place them
+        event.setCancelled(true);
     }
 
     private boolean canBeShop(Block block) {
