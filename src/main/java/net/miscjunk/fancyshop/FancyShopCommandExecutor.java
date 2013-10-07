@@ -69,6 +69,7 @@ public class FancyShopCommandExecutor implements CommandExecutor {
             if (!shop.getOwner().equals(player.getName()) && !player.hasPermission("fancyshop.remove")) {
                 Chat.e(player, "That's not your shop!");
             } else {
+                ShopRepository.remove(shop);
                 Shop.removeShop(shop.getLocation());
                 Chat.s(player, "Shop removed.");
             }
