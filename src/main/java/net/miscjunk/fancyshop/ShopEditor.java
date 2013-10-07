@@ -3,6 +3,7 @@ package net.miscjunk.fancyshop;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -119,16 +120,22 @@ public class ShopEditor implements InventoryHolder {
         return shop;
     }
 
-    private void removeDeal(int slot) {
+    private void removeDeal(Player player, int slot) {
         Deal d = dealMap.get(slot);
         if (d != null) {
             shop.deals.remove(d);
             shop.refreshView();
             viewInv.setItem(slot, null);
+            Chat.s(player, "Removed deal.");
         }
     }
 
     public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player)) {
+            event.setCancelled(true);
+            return;
+        }
+        Player p = (Player)event.getWhoClicked();
         if (event.getRawSlot() >= 0 && event.getRawSlot() < LAST_DEAL) {
             // click in shop
             switch (event.getAction()) {
@@ -136,7 +143,7 @@ public class ShopEditor implements InventoryHolder {
                 case PICKUP_HALF:
                 case PICKUP_ONE:
                 case PICKUP_SOME:
-                    if (state == State.REMOVE) removeDeal(event.getRawSlot());
+                    if (state == State.REMOVE) removeDeal(p, event.getRawSlot());
                     event.setCancelled(true);
                     break;
                 case SWAP_WITH_CURSOR:
@@ -144,11 +151,11 @@ public class ShopEditor implements InventoryHolder {
                     if (state != State.REMOVE) {
                         Deal d = dealMap.get(event.getRawSlot());
                         if (d != null && d.getItem().isSimilar(cursor)) {
-                            editDealAmount(d, cursor);
+                            editDealAmount(p, d, cursor);
                         } else if (d != null && state == State.BUY) {
-                            editBuyPrice(d, cursor);
+                            editBuyPrice(p, d, cursor);
                         } else if (d != null && state == State.SELL) {
-                            editSellPrice(d, cursor);
+                            editSellPrice(p, d, cursor);
                         }
                     }
                     event.setCancelled(true);
@@ -160,7 +167,7 @@ public class ShopEditor implements InventoryHolder {
                         if (d == null) {
                             ItemStack it = event.getCursor().clone();
                             if (event.getAction() == InventoryAction.PLACE_ONE) it.setAmount(1);
-                            addDeal(it);
+                            addDeal(p, it);
                         }
                     }
                     event.setCancelled(true);
@@ -204,35 +211,39 @@ public class ShopEditor implements InventoryHolder {
         }
     }
 
-    private void addDeal(ItemStack item) {
+    private void addDeal(Player player, ItemStack item) {
         int slot = viewInv.firstEmpty();
         if (slot > LAST_DEAL) return;
         Deal d = new Deal(item);
         shop.deals.add(d);
         shop.refreshView();
-        changeState(state);
+        refreshView();
+        Chat.s(player, "Added deal.");
     }
 
-    private void editBuyPrice(Deal deal, ItemStack item) {
+    private void editBuyPrice(Player player, Deal deal, ItemStack item) {
         if (Util.isCurrency(item)) {
             deal.setBuyPrice(item.clone());
             shop.refreshView();
-            changeState(state);
+            refreshView();
+            Chat.s(player, "Changed buy price to "+Util.itemToPrice(item)+".");
         }
     }
 
-    private void editSellPrice(Deal deal, ItemStack item) {
+    private void editSellPrice(Player player, Deal deal, ItemStack item) {
         if (Util.isCurrency(item)) {
             deal.setSellPrice(item.clone());
             shop.refreshView();
-            changeState(state);
+            refreshView();
+            Chat.s(player, "Changed sell price to "+Util.itemToPrice(item)+".");
         }
     }
 
-    private void editDealAmount(Deal deal, ItemStack item) {
+    private void editDealAmount(Player player, Deal deal, ItemStack item) {
         deal.getItem().setAmount(item.getAmount());
         shop.refreshView();
-        changeState(state);
+        refreshView();
+        Chat.s(player, "Changed amount to "+item.getAmount()+".");
     }
 
     public void onInventoryDrag(InventoryDragEvent event) {

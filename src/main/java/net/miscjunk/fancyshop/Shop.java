@@ -92,6 +92,7 @@ public class Shop implements InventoryHolder {
     public void edit(Player player) {
         if (editor == null) editor = new ShopEditor(this);
         player.openInventory(editor.viewInv);
+        Chat.i(player, "Right-click your shop with a stick to see it as a customer.");
     }
 
     public Inventory getInventory() {
@@ -177,8 +178,6 @@ public class Shop implements InventoryHolder {
                         } else if (deal.getSellPrice() != null && deal.getItem().isSimilar(event.getCursor())) {
                             sell(event.getWhoClicked(), deal, event.getView());
                         }
-                    } else {
-                        Bukkit.broadcastMessage("No deal found");
                     }
                     break;
                 case MOVE_TO_OTHER_INVENTORY:
@@ -190,8 +189,6 @@ public class Shop implements InventoryHolder {
                         } else if (deal.getSellPrice() != null && deal.getItem().isSimilar(event.getCursor())) {
                             sellAll(event.getWhoClicked(), deal, event.getView());
                         }
-                    } else {
-                        Bukkit.broadcastMessage("No deal found");
                     }
                     break;
                 default:
@@ -218,35 +215,33 @@ public class Shop implements InventoryHolder {
 
 
     private boolean sell(HumanEntity whoClicked, Deal deal, InventoryView view) {
+        if (!(whoClicked instanceof Player)) return false;
+        Player p = (Player)whoClicked;
         ItemStack cursor = view.getCursor();
         if (deal.getItem().isSimilar(cursor)) {
             if (deal.getItem().getAmount() > cursor.getAmount()) {
-                Bukkit.broadcastMessage("Not enough item");
+                Chat.e(p, "You don't have enough!");
                 return false;
             } else {
                 if (!sourceInv.containsAtLeast(deal.getSellPrice(), deal.getSellPrice().getAmount())) {
-                    Bukkit.broadcastMessage("Out of money");
+                    Chat.e(p, "The shop is out of money.");
                     return false;
                 } else {
-                    Bukkit.broadcastMessage("Selling");
                     // try depositing item
                     Map<Integer, ItemStack> overflow = sourceInv.addItem(deal.getItem().clone());
                     if (!overflow.isEmpty()) {
-                        Bukkit.broadcastMessage("No room for item");
+                        Chat.e(p, "Not enough room.");
                         sourceInv.removeItem(deal.getItem().clone());
                         return false;
                     }
                     sourceInv.removeItem(deal.getSellPrice());
                     cursor.setAmount(cursor.getAmount()-deal.getItem().getAmount());
                     if (cursor.getAmount() == 0) view.setCursor(null);
-                    Bukkit.broadcastMessage("Placing in inventory");
                     overflow = whoClicked.getInventory().addItem(deal.getSellPrice().clone());
                     for (ItemStack it : overflow.values()) {
                         if (cursor == null || cursor.getAmount() == 0) {
-                            Bukkit.broadcastMessage("Placing in hand");
                             view.setCursor(it);
                         } else {
-                            Bukkit.broadcastMessage("Dropping");
                             whoClicked.getWorld().dropItemNaturally(whoClicked.getLocation(), it);
                         }
                     }
@@ -255,7 +250,6 @@ public class Shop implements InventoryHolder {
                 }
             }
         } else {
-            Bukkit.broadcastMessage("Not holding item");
             return false;
         }
     }
@@ -268,34 +262,31 @@ public class Shop implements InventoryHolder {
     }
 
     private boolean buy(HumanEntity whoClicked, Deal deal, InventoryView view) {
+        if (!(whoClicked instanceof Player)) return false;
+        Player p = (Player)whoClicked;
         ItemStack cursor = view.getCursor();
         if (deal.getBuyPrice().isSimilar(cursor)) {
             if (deal.getBuyPrice().getAmount() > cursor.getAmount()) {
-                Bukkit.broadcastMessage("Not enough money");
+                Chat.e(p, "You don't have enough!");
                 return false;
             } else {
                 if (!sourceInv.containsAtLeast(deal.getItem(), deal.getItem().getAmount())) {
-                    Bukkit.broadcastMessage("Out of stock");
+                    Chat.e(p, "Out of stock.");
                     return false;
                 } else {
-                    Bukkit.broadcastMessage("Buying");
                     // try depositing currency
                     Map<Integer, ItemStack> overflow = sourceInv.addItem(deal.getBuyPrice().clone());
                     if (!overflow.isEmpty()) {
-                        Bukkit.broadcastMessage("No room for currency");
                         sourceInv.removeItem(deal.getBuyPrice().clone());
                         return false;
                     }
                     sourceInv.removeItem(deal.getItem());
                     cursor.setAmount(cursor.getAmount()-deal.getBuyPrice().getAmount());
                     if (cursor.getAmount() == 0) {
-                        Bukkit.broadcastMessage("Placing in hand");
                         view.setCursor(deal.getItem().clone());
                     } else {
-                        Bukkit.broadcastMessage("Placing in inventory");
                         overflow = whoClicked.getInventory().addItem(deal.getItem().clone());
                         for (ItemStack it : overflow.values()) {
-                            Bukkit.broadcastMessage("Dropping");
                             whoClicked.getWorld().dropItemNaturally(whoClicked.getLocation(), it);
                         }
                     }
@@ -304,7 +295,6 @@ public class Shop implements InventoryHolder {
                 }
             }
         } else {
-            Bukkit.broadcastMessage("Not holding currency");
             return false;
         }
     }
