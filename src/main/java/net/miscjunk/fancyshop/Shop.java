@@ -37,8 +37,8 @@ public class Shop implements InventoryHolder {
         this.location = location;
         this.owner = owner;
         sourceInv = inv;
+        String name;
         viewInv = Bukkit.createInventory(this, 27, owner+"'s Shop");
-        // TODO - custom deals
         deals = new ArrayList<Deal>();
         refreshView();
     }
@@ -59,7 +59,6 @@ public class Shop implements InventoryHolder {
             return shopMap.get(loc);
         } else {
             Shop shop = ShopRepository.load(loc, inv);
-            System.out.println(shop);
             if (shop == null) shop = new Shop(loc, inv, owner);
             shopMap.put(loc, shop);
             return shop;
@@ -79,7 +78,11 @@ public class Shop implements InventoryHolder {
         }
         ShopLocation loc = new ShopLocation(l);
         if (shopMap.containsKey(loc)) return true;
-        return ShopRepository.load(loc, inv) == null;
+        return ShopRepository.load(loc, inv) != null;
+    }
+
+    public static void removeShop(ShopLocation loc) {
+        if (shopMap != null && shopMap.containsKey(loc)) shopMap.remove(loc);
     }
 
     public void open(Player player) {

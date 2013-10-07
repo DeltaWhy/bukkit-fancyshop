@@ -1,7 +1,21 @@
 author: DeltaWhy
 database: false
+depend: [SQLibrary]
 generator: http://dinnerbone.com/minecraft/tools/pluginator/
 main: net.miscjunk.fancyshop.FancyShop
 name: FancyShop
 startup: postworld
 version: '0.1'
+commands:
+    fancyshop:
+        aliases: [fs, shop]
+permissions:
+    fancyshop.create:
+        description: Create a shop.
+        default: true
+    fancyshop.use:
+        description: Use other people's shops.
+        default: true
+    fancyshop.remove:
+        description: Remove someone else's shop (you can always remove your own)
+        default: op

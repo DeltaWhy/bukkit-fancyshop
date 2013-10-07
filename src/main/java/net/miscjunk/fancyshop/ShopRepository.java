@@ -93,6 +93,21 @@ public class ShopRepository {
         stmt.execute();
     }
 
+    public static boolean remove(Shop shop) {
+        try {
+            PreparedStatement stmt = db.prepare("DELETE FROM deals WHERE shop_id=?");
+            stmt.setString(1, shop.getLocation().toString());
+            stmt.execute();
+            stmt = db.prepare("DELETE FROM shops WHERE location=?");
+            stmt.setString(1, shop.getLocation().toString());
+            stmt.execute();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static Shop load(ShopLocation location, Inventory inv) {
         try {
             PreparedStatement stmt = db.prepare("SELECT * FROM shops WHERE location=?");
