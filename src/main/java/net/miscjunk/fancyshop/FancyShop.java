@@ -9,6 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -96,6 +99,37 @@ public class FancyShop extends JavaPlugin implements Listener {
             Shop shop = ((ShopEditor)event.getInventory().getHolder()).getShop();
             ShopRepository.store(shop);
         }
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (!canBeShop(event.getBlock())) return;
+        Inventory inv = ((InventoryHolder)event.getBlock().getState()).getInventory();
+        if (Shop.isShop(inv)) {
+            Chat.e(event.getPlayer(), "You can't break a shop chest. First remove the shop with /fancyshop remove.");
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onEntityExplode(EntityExplodeEvent event) {
+        if (event.isCancelled()) return;
+        for (int i=0; i < event.blockList().size(); i++) {
+            Block b = event.blockList().get(i);
+            if (!canBeShop(b)) continue;
+            Inventory inv = ((InventoryHolder)b.getState()).getInventory();
+            if (Shop.isShop(inv)) {
+                event.blockList().remove(i);
+                i--;
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockBurn(BlockBurnEvent event) {
+        if (!canBeShop(event.getBlock())) return;
+        Inventory inv = ((InventoryHolder)event.getBlock().getState()).getInventory();
+        if (Shop.isShop(inv)) event.setCancelled(true);
     }
 
     private boolean canBeShop(Block block) {
