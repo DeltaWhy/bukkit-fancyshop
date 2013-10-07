@@ -106,6 +106,10 @@ public class Shop implements InventoryHolder {
         return location;
     }
 
+    public void refreshEditor() {
+        if (editor != null) editor.refreshView();
+    }
+
     public void refreshView() {
         dealMap = new HashMap<Integer, Deal>();
         refreshDeals();
@@ -124,7 +128,7 @@ public class Shop implements InventoryHolder {
         }
     }
 
-    public void refreshDeals() {
+    private void refreshDeals() {
         for (Deal deal : deals) {
             if (deal.getBuyPrice() != null) {
                 deal.setAvailable(countItems(sourceInv, deal.getItem()));

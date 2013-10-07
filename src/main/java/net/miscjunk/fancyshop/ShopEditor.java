@@ -26,6 +26,7 @@ public class ShopEditor implements InventoryHolder {
     ItemStack sellBtn;
     ItemStack removeBtn;
     ItemStack doneBtn;
+
     enum State {BUY, SELL, REMOVE}
     State state;
     Map<Integer, Deal> dealMap;
@@ -48,8 +49,7 @@ public class ShopEditor implements InventoryHolder {
 
         meta = sellBtn.getItemMeta();
         meta.setDisplayName("Editing sell prices");
-        lore.clear();
-        lore.add("Click to edit buy prices");
+        lore.clear(); lore.add("Click to edit buy prices");
         meta.setLore(lore);
         sellBtn.setItemMeta(meta);
 
@@ -65,6 +65,10 @@ public class ShopEditor implements InventoryHolder {
         doneBtn.setItemMeta(meta);
 
         changeState(State.BUY);
+    }
+
+    public void refreshView() {
+        changeState(state);
     }
 
     private void refreshView(State st) {
@@ -109,6 +113,10 @@ public class ShopEditor implements InventoryHolder {
 
     public Inventory getInventory() {
         return viewInv;
+    }
+
+    public Shop getShop() {
+        return shop;
     }
 
     private void removeDeal(int slot) {

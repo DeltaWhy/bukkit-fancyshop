@@ -71,11 +71,11 @@ public class FancyShopCommandExecutor implements CommandExecutor {
             } else {
                 Shop.removeShop(shop.getLocation());
                 Chat.s(player, "Shop removed.");
-                clearPending(player);
             }
         } else {
             Chat.e(player, "That's not a shop!");
         }
+        clearPending(player);
     }
 
     private void create(Player player, Inventory inv) {
@@ -86,8 +86,8 @@ public class FancyShopCommandExecutor implements CommandExecutor {
             ShopRepository.store(shop);
             Chat.s(player, "Shop created.");
             shop.edit(player);
-            clearPending(player);
         }
+        clearPending(player);
     }
 
     private void remove(Player player, Command cmd, String label, String[] args) {

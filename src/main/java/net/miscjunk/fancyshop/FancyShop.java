@@ -40,22 +40,6 @@ public class FancyShop extends JavaPlugin implements Listener {
                         event.getPlayer().getName());
                 shop.open(event.getPlayer());
             }
-        } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getMaterial() == Material.PAPER) {
-            if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.CHEST) {
-                event.setCancelled(true);
-                Shop shop = Shop.fromInventory(((InventoryHolder)event.getClickedBlock().getState()).getInventory(),
-                        event.getPlayer().getName());
-                shop.edit(event.getPlayer());
-            }
-        } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getMaterial() == Material.BOOK) {
-            if (event.getClickedBlock() != null && event.getClickedBlock().getType() == Material.CHEST) {
-                Inventory inv = ((InventoryHolder)event.getClickedBlock().getState()).getInventory();
-                if (Shop.isShop(inv)) {
-                    event.setCancelled(true);
-                    Bukkit.broadcastMessage("Saving");
-                    ShopRepository.store(Shop.fromInventory(inv, event.getPlayer().getName()));
-                }
-            }
         } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && !event.getPlayer().isSneaking()
                 && event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof InventoryHolder) {
             Player p = event.getPlayer();
@@ -101,7 +85,14 @@ public class FancyShop extends JavaPlugin implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         if (Shop.isShop(event.getInventory())) {
-            Shop.fromInventory(event.getInventory(),"").refreshView();
+            // update shop view after using chest
+            Shop shop = Shop.fromInventory(event.getInventory(),"");
+            shop.refreshView();
+            shop.refreshEditor();
+        } else if (event.getInventory().getHolder() instanceof ShopEditor) {
+            // save shop after editing
+            Shop shop = ((ShopEditor)event.getInventory().getHolder()).getShop();
+            ShopRepository.store(shop);
         }
     }
 }
