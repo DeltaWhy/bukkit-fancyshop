@@ -19,3 +19,6 @@ permissions:
     fancyshop.remove:
         description: Remove someone else's shop (you can always remove your own)
         default: op
+    fancyshop.open:
+        description: Open chests for other people's shops.
+        default: op
