@@ -230,8 +230,14 @@ public class Shop implements InventoryHolder {
                     // try depositing item
                     Map<Integer, ItemStack> overflow = sourceInv.addItem(deal.getItem().clone());
                     if (!overflow.isEmpty()) {
-                        Chat.e(p, "Not enough room.");
-                        sourceInv.removeItem(deal.getItem().clone());
+                        Chat.e(p, "Not enough room in shop.");
+                        int numOverflowed = 0;
+                        for (ItemStack it : overflow.values()) {
+                            if (it.isSimilar(deal.getItem())) numOverflowed += it.getAmount();
+                        }
+                        ItemStack toRemove = deal.getItem().clone();
+                        toRemove.setAmount(deal.getItem().getAmount()-numOverflowed);
+                        sourceInv.removeItem(toRemove);
                         return false;
                     }
                     sourceInv.removeItem(deal.getSellPrice());
@@ -277,7 +283,14 @@ public class Shop implements InventoryHolder {
                     // try depositing currency
                     Map<Integer, ItemStack> overflow = sourceInv.addItem(deal.getBuyPrice().clone());
                     if (!overflow.isEmpty()) {
-                        sourceInv.removeItem(deal.getBuyPrice().clone());
+                        Chat.e(p, "Not enough room in shop.");
+                        int numOverflowed = 0;
+                        for (ItemStack it : overflow.values()) {
+                            if (it.isSimilar(deal.getBuyPrice())) numOverflowed += it.getAmount();
+                        }
+                        ItemStack toRemove = deal.getBuyPrice().clone();
+                        toRemove.setAmount(deal.getBuyPrice().getAmount()-numOverflowed);
+                        sourceInv.removeItem(toRemove);
                         return false;
                     }
                     sourceInv.removeItem(deal.getItem());
