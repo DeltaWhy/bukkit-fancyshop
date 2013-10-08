@@ -86,6 +86,8 @@ public class FancyShopCommandExecutor implements CommandExecutor {
             Shop shop = Shop.fromInventory(inv, player.getName());
             ShopRepository.store(shop);
             Chat.s(player, "Shop created.");
+            Chat.i(player, "Right-click your shop with a stick to see it as a customer.");
+            Chat.i(player, "Shift-right-click to open the chest to manage inventory.");
             shop.edit(player);
         }
         clearPending(player);

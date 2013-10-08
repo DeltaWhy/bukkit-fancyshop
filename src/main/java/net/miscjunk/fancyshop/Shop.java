@@ -92,8 +92,6 @@ public class Shop implements InventoryHolder {
     public void edit(Player player) {
         if (editor == null) editor = new ShopEditor(this);
         player.openInventory(editor.viewInv);
-        Chat.i(player, "Right-click your shop with a stick to see it as a customer.");
-        Chat.i(player, "Shift-right-click to open the chest to manage inventory.");
     }
 
     public Inventory getInventory() {
