@@ -19,8 +19,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="sqlite-jdbc-3.7.2" level="project" />
     <orderEntry type="library" name="Maven: org.bukkit:bukkit:1.6.2-R1.0" level="project" />
-    <orderEntry type="library" name="Maven: lib.PatPater:SQLibrary:6.0" level="project" />
   </component>
 </module>
 

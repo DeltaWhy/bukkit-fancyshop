@@ -1,6 +1,5 @@
 author: DeltaWhy
 database: false
-depend: [SQLibrary]
 generator: http://dinnerbone.com/minecraft/tools/pluginator/
 main: net.miscjunk.fancyshop.FancyShop
 name: FancyShop

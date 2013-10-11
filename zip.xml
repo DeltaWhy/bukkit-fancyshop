@@ -16,7 +16,7 @@
         </fileSet>
         <fileSet>
             <directory>lib</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>/FancyShop/lib</outputDirectory>
             <includes>
                 <include>*.jar</include>
             </includes>
