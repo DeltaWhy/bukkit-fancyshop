@@ -55,7 +55,7 @@ public class Shop implements InventoryHolder {
             return null;
         }
         ShopLocation loc = new ShopLocation(l);
-        if (shopMap.containsKey(loc)) {
+        if (shopMap.containsKey(loc) && shopMap.get(loc) != null) {
             return shopMap.get(loc);
         } else {
             Shop shop = ShopRepository.load(loc, inv);
@@ -77,8 +77,8 @@ public class Shop implements InventoryHolder {
             return false;
         }
         ShopLocation loc = new ShopLocation(l);
-        if (shopMap.containsKey(loc)) return true;
-        return ShopRepository.load(loc, inv) != null;
+        if (!shopMap.containsKey(loc)) shopMap.put(loc, ShopRepository.load(loc, inv));
+        return (shopMap.get(loc) != null);
     }
 
     public static void removeShop(ShopLocation loc) {
