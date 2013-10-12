@@ -4,7 +4,7 @@ generator: http://dinnerbone.com/minecraft/tools/pluginator/
 main: net.miscjunk.fancyshop.FancyShop
 name: FancyShop
 startup: postworld
-version: '0.2-SNAPSHOT'
+version: '${pom.version}'
 commands:
     fancyshop:
         aliases: [fs, shop]
