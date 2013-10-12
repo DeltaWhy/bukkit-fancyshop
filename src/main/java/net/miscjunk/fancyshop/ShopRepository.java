@@ -21,24 +21,15 @@ public class ShopRepository {
         if (ShopRepository.plugin != null || ShopRepository.db != null) {
             throw new RuntimeException("Already initialized");
         }
-        String libPath = plugin.getDataFolder().getAbsolutePath()+File.separator+"lib"+File.separator+"sqlite-jdbc-3.7.2.jar";
+        //String libPath = plugin.getDataFolder().getAbsolutePath()+File.separator+"lib"+File.separator+"sqlite-jdbc-3.7.2.jar";
         String dbPath = plugin.getDataFolder().getAbsolutePath()+File.separator+"shops.db";
         try {
-            ClassLoader cl = new URLClassLoader(new URL[]{new URL("jar:file:"+libPath+"!/")});
-            Class c = cl.loadClass("org.sqlite.JDBC");
-            db = (Connection)c.getMethod("createConnection", String.class, Properties.class).invoke(null, "jdbc:sqlite:"+dbPath, new Properties());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Couldn't find sqlite library",e);
+            Class.forName("org.sqlite.JDBC");
+            db = DriverManager.getConnection("jdbc:sqlite:"+dbPath);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Couldn't load sqlite library",e);
-        //} catch (SQLException e) {
-            //throw new RuntimeException("Couldn't open database",e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException("Couldn't load sqlite library",e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Couldn't load sqlite library",e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Couldn't load sqlite library",e);
+        } catch (SQLException e) {
+            throw new RuntimeException("Couldn't open database",e);
         }
         ShopRepository.plugin = plugin;
         try {

@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.miscjunk.fancyshop</groupId>
     <artifactId>FancyShop</artifactId>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
     <name>FancyShop</name>
     <repositories>
         <repository>
@@ -20,16 +20,6 @@
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>zip.xml</descriptor>
-                    </descriptors>
-                    <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
             </plugin>
         </plugins>
