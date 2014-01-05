@@ -21,8 +21,10 @@ public class ShopEditor implements InventoryHolder {
     Shop shop;
     Inventory viewInv;
     static final int LAST_DEAL=26;
+    static final int CHEST=33;
     static final int BUY_SELL=34;
     static final int REMOVE=35;
+    ItemStack chestBtn;
     ItemStack buyBtn;
     ItemStack sellBtn;
     ItemStack removeBtn;
@@ -36,15 +38,23 @@ public class ShopEditor implements InventoryHolder {
         this.shop = shop;
         this.state = State.BUY;
         viewInv = Bukkit.createInventory(this, 36, "Manage Shop");
+        chestBtn = new ItemStack(Material.CHEST, 1);
         buyBtn = new ItemStack(Material.WOOL, 1, (short)5); //green
         sellBtn = new ItemStack(Material.WOOL, 1, (short)11); //blue
         removeBtn = new ItemStack(Material.FIRE, 1);
         doneBtn = new ItemStack(Material.WOOL, 1, (short)5);
 
-        ItemMeta meta = buyBtn.getItemMeta();
-        meta.setDisplayName("Editing buy prices");
+        ItemMeta meta = chestBtn.getItemMeta();
+        meta.setDisplayName("Inventory");
         List<String> lore = new ArrayList<String>();
-        lore.add("Click to edit sell prices");
+        lore.add("Click to access shop chest");
+        meta.setLore(lore);
+        chestBtn.setItemMeta(meta);
+
+
+        meta = buyBtn.getItemMeta();
+        meta.setDisplayName("Editing buy prices");
+        lore.clear(); lore.add("Click to edit sell prices");
         meta.setLore(lore);
         buyBtn.setItemMeta(meta);
 
@@ -95,14 +105,17 @@ public class ShopEditor implements InventoryHolder {
         refreshView(next);
         switch (next) {
             case BUY:
+                viewInv.setItem(CHEST, chestBtn);
                 viewInv.setItem(BUY_SELL, buyBtn);
                 viewInv.setItem(REMOVE, removeBtn);
                 break;
             case SELL:
+                viewInv.setItem(CHEST, chestBtn);
                 viewInv.setItem(BUY_SELL, sellBtn);
                 viewInv.setItem(REMOVE, removeBtn);
                 break;
             case REMOVE:
+                viewInv.setItem(CHEST, null);
                 viewInv.setItem(BUY_SELL, null);
                 viewInv.setItem(REMOVE, doneBtn);
                 break;
@@ -177,7 +190,9 @@ public class ShopEditor implements InventoryHolder {
             }
         } else if (event.getRawSlot() >= 0 && event.getRawSlot() < event.getInventory().getSize()) {
             // click in button row
-            if (event.getRawSlot() == BUY_SELL) {
+            if (event.getRawSlot() == CHEST && state != State.REMOVE) {
+                p.openInventory(shop.sourceInv);
+            } else if (event.getRawSlot() == BUY_SELL) {
                 switch (state) {
                     case BUY:
                         changeState(State.SELL);
