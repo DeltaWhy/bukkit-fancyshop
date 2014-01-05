@@ -21,7 +21,7 @@ public class ShopRepository {
         if (ShopRepository.plugin != null || ShopRepository.db != null) {
             throw new RuntimeException("Already initialized");
         }
-        //String libPath = plugin.getDataFolder().getAbsolutePath()+File.separator+"lib"+File.separator+"sqlite-jdbc-3.7.2.jar";
+        if (!plugin.getDataFolder().exists()) plugin.getDataFolder().mkdir();
         String dbPath = plugin.getDataFolder().getAbsolutePath()+File.separator+"shops.db";
         try {
             Class.forName("org.sqlite.JDBC");
