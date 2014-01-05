@@ -18,6 +18,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -136,15 +137,34 @@ public class FancyShop extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (event.getBlock().getType() != Material.HOPPER) return;
-        Block above = event.getBlock().getRelative(BlockFace.UP);
-        if (!canBeShop(above)) return;
-        Inventory inv = ((InventoryHolder)above.getState()).getInventory();
-        if (!Shop.isShop(inv)) return;
-        Shop shop = Shop.fromInventory(inv, "");
-        if (shop.getOwner().equals(event.getPlayer().getName())) return; // we'll assume they know what they're doing
-        event.setCancelled(true);
-        Chat.e(event.getPlayer(), "You can't place that here.");
+        if (event.getBlock().getType() == Material.HOPPER) {
+            Block above = event.getBlock().getRelative(BlockFace.UP);
+            if (!canBeShop(above)) return;
+            Inventory inv = ((InventoryHolder)above.getState()).getInventory();
+            if (!Shop.isShop(inv)) return;
+            Shop shop = Shop.fromInventory(inv, "");
+            if (shop.getOwner().equals(event.getPlayer().getName())) return; // we'll assume they know what they're doing
+            event.setCancelled(true);
+            Chat.e(event.getPlayer(), "You can't place that here.");
+        } else if (event.getBlock().getType() == Material.CHEST || event.getBlock().getType() == Material.TRAPPED_CHEST) {
+            Inventory inv = ((InventoryHolder)event.getBlock().getState()).getInventory();
+            if (!(inv instanceof DoubleChestInventory)) return;
+            DoubleChestInventory dc = (DoubleChestInventory)inv;
+            Shop shop;
+            if (Shop.isShop(dc.getLeftSide())) {
+                shop = Shop.fromInventory(dc.getLeftSide(), "");
+            } else if (Shop.isShop(dc.getRightSide())) {
+                shop = Shop.fromInventory(dc.getRightSide(), "");
+            } else {
+                return;
+            }
+            Chat.s(event.getPlayer(), "Extended shop.");
+            ShopRepository.remove(shop);
+            Shop.removeShop(shop.getLocation());
+            Shop.removeShop(new ShopLocation(dc.getHolder().getLocation()));
+            shop.setLocation(new ShopLocation(dc.getHolder().getLocation()));
+            ShopRepository.store(shop);
+        }
     }
 
     @EventHandler

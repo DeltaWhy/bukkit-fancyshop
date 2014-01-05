@@ -102,6 +102,10 @@ public class Shop implements InventoryHolder {
         return owner;
     }
 
+    public void setLocation(ShopLocation location) {
+        this.location = location;
+    }
+
     public ShopLocation getLocation() {
         return location;
     }
