@@ -120,7 +120,7 @@ public class Shop implements InventoryHolder {
         viewInv.clear();
         int i = 0;
         for (Deal deal : deals) {
-            if (deal.getAvailable() == 0 && deal.getBuying() == 0) continue;
+            if (deal.getBuyPrice() == null && deal.getSellPrice() == null) continue;
             List<String> lore = deal.toLore();
             ItemStack view = deal.getItem().clone();
             ItemMeta meta = view.getItemMeta();
