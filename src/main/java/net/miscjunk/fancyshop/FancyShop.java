@@ -22,7 +22,9 @@ import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
 
+import java.io.IOException;
 import java.util.logging.Logger;
 
 public class FancyShop extends JavaPlugin implements Listener {
@@ -36,6 +38,12 @@ public class FancyShop extends JavaPlugin implements Listener {
         cmdExecutor = new FancyShopCommandExecutor(this);
         getCommand("fancyshop").setExecutor(cmdExecutor);
         ShopRepository.init(this);
+        try {
+            Metrics metrics = new Metrics(this);
+            metrics.start();
+        } catch (IOException e) {
+            Bukkit.getLogger().info("Failed to send metrics");
+        }
     }
 
     @EventHandler
