@@ -177,8 +177,8 @@ public class FancyShop extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onInventoryMove(InventoryMoveItemEvent event) {
-        if (!Shop.isShop(event.getSource())) return;
         if (event.getInitiator().getHolder() instanceof Hopper) return; // allow hoppers to work because only the owner can place them
+        if (!Shop.isShop(event.getSource())) return;
         event.setCancelled(true);
     }
 
