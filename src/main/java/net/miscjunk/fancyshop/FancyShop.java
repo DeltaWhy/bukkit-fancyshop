@@ -7,6 +7,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Hopper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -46,7 +47,7 @@ public class FancyShop extends JavaPlugin implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (!canBeShop(event.getClickedBlock()) || event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         Inventory inv = ((InventoryHolder)event.getClickedBlock().getState()).getInventory();
@@ -61,7 +62,7 @@ public class FancyShop extends JavaPlugin implements Listener {
         } else {
             Player p = event.getPlayer();
             if (cmdExecutor.hasPending(p)) {
-                cmdExecutor.onPlayerInteract(event);
+                // wait for the high-priority handler to catch it
             } else {
                 if (Shop.isShop(inv)) {
                     event.setCancelled(true);
@@ -78,6 +79,14 @@ public class FancyShop extends JavaPlugin implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerInteract2(PlayerInteractEvent event) {
+        Player p = event.getPlayer();
+        if (!cmdExecutor.hasPending(p)) return;
+        if (event.isCancelled()) return;
+        cmdExecutor.onPlayerInteract(event);
     }
 
     @EventHandler
