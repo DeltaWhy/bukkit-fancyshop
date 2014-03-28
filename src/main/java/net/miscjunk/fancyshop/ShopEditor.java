@@ -94,7 +94,7 @@ public class ShopEditor implements InventoryHolder {
                 lore.add(""+ChatColor.RESET+ChatColor.RED+"Click to remove");
                 meta.setLore(lore);
             } else {
-                meta.setLore(d.toLore());
+                meta.setLore(d.toLore(shop.isAdmin()));
             }
             it.setItemMeta(meta);
             viewInv.setItem(i, it);

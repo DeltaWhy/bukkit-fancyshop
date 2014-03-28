@@ -27,15 +27,17 @@ public class Shop implements InventoryHolder {
     Inventory sourceInv;
     Inventory viewInv;
     String owner;
+    boolean admin;
     List<Deal> deals;
     Map<Integer, Deal> dealMap;
     ShopEditor editor;
 
     static Map<ShopLocation, Shop> shopMap;
 
-    public Shop(ShopLocation location, Inventory inv, String owner) {
+    public Shop(ShopLocation location, Inventory inv, String owner, boolean admin) {
         this.location = location;
         this.owner = owner;
+        this.admin = admin;
         sourceInv = inv;
         String name;
         viewInv = Bukkit.createInventory(this, 27, owner+"'s Shop");
@@ -59,7 +61,7 @@ public class Shop implements InventoryHolder {
             return shopMap.get(loc);
         } else {
             Shop shop = ShopRepository.load(loc, inv);
-            if (shop == null) shop = new Shop(loc, inv, owner);
+            if (shop == null) shop = new Shop(loc, inv, owner, false);
             shopMap.put(loc, shop);
             return shop;
         }
@@ -102,6 +104,14 @@ public class Shop implements InventoryHolder {
         return owner;
     }
 
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
+    }
+
     public void setLocation(ShopLocation location) {
         this.location = location;
     }
@@ -121,7 +131,7 @@ public class Shop implements InventoryHolder {
         int i = 0;
         for (Deal deal : deals) {
             if (deal.getBuyPrice() == null && deal.getSellPrice() == null) continue;
-            List<String> lore = deal.toLore();
+            List<String> lore = deal.toLore(admin);
             ItemStack view = deal.getItem().clone();
             ItemMeta meta = view.getItemMeta();
             meta.setLore(lore);
@@ -155,7 +165,7 @@ public class Shop implements InventoryHolder {
             if (i != -1) {
                 ItemStack view = viewInv.getItem(i);
                 ItemMeta meta = view.getItemMeta();
-                meta.setLore(deal.toLore());
+                meta.setLore(deal.toLore(admin));
                 view.setItemMeta(meta);
             }
         }
@@ -226,24 +236,27 @@ public class Shop implements InventoryHolder {
                 Chat.e(p, "You don't have enough!");
                 return false;
             } else {
-                if (!sourceInv.containsAtLeast(deal.getSellPrice(), deal.getSellPrice().getAmount())) {
+                if (!admin && !sourceInv.containsAtLeast(deal.getSellPrice(), deal.getSellPrice().getAmount())) {
                     Chat.e(p, "The shop is out of money.");
                     return false;
                 } else {
                     // try depositing item
-                    Map<Integer, ItemStack> overflow = sourceInv.addItem(deal.getItem().clone());
-                    if (!overflow.isEmpty()) {
-                        Chat.e(p, "Not enough room in shop.");
-                        int numOverflowed = 0;
-                        for (ItemStack it : overflow.values()) {
-                            if (it.isSimilar(deal.getItem())) numOverflowed += it.getAmount();
+                    Map<Integer, ItemStack> overflow;
+                    if (!admin) {
+                        overflow = sourceInv.addItem(deal.getItem().clone());
+                        if (!overflow.isEmpty()) {
+                            Chat.e(p, "Not enough room in shop.");
+                            int numOverflowed = 0;
+                            for (ItemStack it : overflow.values()) {
+                                if (it.isSimilar(deal.getItem())) numOverflowed += it.getAmount();
+                            }
+                            ItemStack toRemove = deal.getItem().clone();
+                            toRemove.setAmount(deal.getItem().getAmount() - numOverflowed);
+                            sourceInv.removeItem(toRemove);
+                            return false;
                         }
-                        ItemStack toRemove = deal.getItem().clone();
-                        toRemove.setAmount(deal.getItem().getAmount()-numOverflowed);
-                        sourceInv.removeItem(toRemove);
-                        return false;
+                        sourceInv.removeItem(deal.getSellPrice());
                     }
-                    sourceInv.removeItem(deal.getSellPrice());
                     cursor.setAmount(cursor.getAmount()-deal.getItem().getAmount());
                     if (cursor.getAmount() == 0) view.setCursor(null);
                     overflow = whoClicked.getInventory().addItem(deal.getSellPrice().clone());
@@ -279,24 +292,27 @@ public class Shop implements InventoryHolder {
                 Chat.e(p, "You don't have enough!");
                 return false;
             } else {
-                if (!sourceInv.containsAtLeast(deal.getItem(), deal.getItem().getAmount())) {
+                if (!admin && !sourceInv.containsAtLeast(deal.getItem(), deal.getItem().getAmount())) {
                     Chat.e(p, "Out of stock.");
                     return false;
                 } else {
                     // try depositing currency
-                    Map<Integer, ItemStack> overflow = sourceInv.addItem(deal.getBuyPrice().clone());
-                    if (!overflow.isEmpty()) {
-                        Chat.e(p, "Not enough room in shop.");
-                        int numOverflowed = 0;
-                        for (ItemStack it : overflow.values()) {
-                            if (it.isSimilar(deal.getBuyPrice())) numOverflowed += it.getAmount();
+                    Map<Integer, ItemStack> overflow;
+                    if (!admin) {
+                        overflow = sourceInv.addItem(deal.getBuyPrice().clone());
+                        if (!overflow.isEmpty()) {
+                            Chat.e(p, "Not enough room in shop.");
+                            int numOverflowed = 0;
+                            for (ItemStack it : overflow.values()) {
+                                if (it.isSimilar(deal.getBuyPrice())) numOverflowed += it.getAmount();
+                            }
+                            ItemStack toRemove = deal.getBuyPrice().clone();
+                            toRemove.setAmount(deal.getBuyPrice().getAmount() - numOverflowed);
+                            sourceInv.removeItem(toRemove);
+                            return false;
                         }
-                        ItemStack toRemove = deal.getBuyPrice().clone();
-                        toRemove.setAmount(deal.getBuyPrice().getAmount()-numOverflowed);
-                        sourceInv.removeItem(toRemove);
-                        return false;
+                        sourceInv.removeItem(deal.getItem());
                     }
-                    sourceInv.removeItem(deal.getItem());
                     cursor.setAmount(cursor.getAmount()-deal.getBuyPrice().getAmount());
                     if (cursor.getAmount() == 0) {
                         view.setCursor(deal.getItem().clone());

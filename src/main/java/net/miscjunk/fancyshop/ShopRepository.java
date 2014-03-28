@@ -55,6 +55,9 @@ public class ShopRepository {
         ResultSet rs = stmt.executeQuery("PRAGMA user_version");
         if (rs.next()) {
             int version = rs.getInt(1);
+            if (version > 2) {
+                throw new RuntimeException("Database is newer than plugin version");
+            }
             if (version == 0) {
                 stmt.execute("CREATE TABLE shops (" +
                         "location TEXT NOT NULL," +
@@ -70,8 +73,10 @@ public class ShopRepository {
                         "FOREIGN KEY (shop_id) REFERENCES shops(location)" +
                         ")");
                 stmt.execute("PRAGMA user_version=1");
-            } else if (version > 1) {
-                throw new RuntimeException("Database is newer than plugin version");
+            }
+            if (version == 1) {
+                stmt.execute("ALTER TABLE shops ADD COLUMN is_admin INT NOT NULL DEFAULT 0");
+                stmt.execute("PRAGMA user_version=2");
             }
         } else {
             throw new RuntimeException("Couldn't get database schema version");
@@ -80,9 +85,10 @@ public class ShopRepository {
 
     public static boolean store(Shop shop) {
         try {
-            PreparedStatement stmt = db.prepareStatement("INSERT OR REPLACE INTO shops VALUES (?, ?)");
+            PreparedStatement stmt = db.prepareStatement("INSERT OR REPLACE INTO shops VALUES (?, ?, ?)");
             stmt.setString(1, shop.getLocation().toString());
             stmt.setString(2, shop.getOwner());
+            stmt.setBoolean(3, shop.isAdmin());
             stmt.execute();
             stmt = db.prepareStatement("DELETE FROM deals WHERE shop_id=?");
             stmt.setString(1, shop.getLocation().toString());
@@ -128,7 +134,8 @@ public class ShopRepository {
             ResultSet rs = stmt.executeQuery();
             if (!rs.next()) return null;
             String owner = rs.getString("owner");
-            Shop shop = new Shop(location, inv, owner);
+            boolean admin = rs.getBoolean("is_admin");
+            Shop shop = new Shop(location, inv, owner, admin);
             stmt = db.prepareStatement("SELECT * FROM deals WHERE shop_id=?");
             stmt.setString(1, location.toString());
             rs = stmt.executeQuery();

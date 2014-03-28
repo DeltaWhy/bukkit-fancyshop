@@ -36,20 +36,20 @@ public class Deal {
         this.sellPrice = sellPrice;
     }
 
-    public List<String> toLore() {
+    public List<String> toLore(boolean admin) {
         List<String> lore = new ArrayList<String>();
         if (buyPrice != null)
             lore.add(""+ChatColor.RESET+ChatColor.GREEN+"Buy: "+Util.itemToPrice(buyPrice));
         if (sellPrice != null)
             lore.add(""+ChatColor.RESET+ChatColor.BLUE+"Sell: "+Util.itemToPrice(sellPrice));
-        if (buyPrice != null) {
+        if (buyPrice != null && !admin) {
             if (available > 0) {
                 lore.add(""+available+" in stock");
             } else {
                 lore.add(""+ChatColor.RED+"Out of stock!");
             }
         }
-        if (sellPrice != null) {
+        if (sellPrice != null && !admin) {
             if (buying > 0) {
                 lore.add("Buying "+buying);
             } else {
