@@ -110,6 +110,8 @@ public class Shop implements InventoryHolder {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+        refreshEditor();
+        refreshView();
     }
 
     public void setLocation(ShopLocation location) {

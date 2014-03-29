@@ -21,3 +21,6 @@ permissions:
     fancyshop.open:
         description: Open chests for other people's shops.
         default: op
+    fancyshop.setadmin:
+        description: Create unlimited (admin) shops.
+        default: op

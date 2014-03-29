@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FancyShopCommandExecutor implements CommandExecutor {
-    enum PendingCommand { CREATE, REMOVE };
+    enum PendingCommand { CREATE, REMOVE, ADMIN_ON, ADMIN_OFF };
     private FancyShop plugin;
     Map<String,PendingCommand> pending;
     Map<String,BukkitTask> tasks;
@@ -39,6 +39,8 @@ public class FancyShopCommandExecutor implements CommandExecutor {
             create(p, cmd, label, args);
         } else if (args[0].equals("remove")) {
             remove(p, cmd, label, args);
+        } else if (args[0].equals("setadmin")) {
+            setAdmin(p, cmd, label, args);
         } else {
             printUsage(sender);
         }
@@ -58,6 +60,18 @@ public class FancyShopCommandExecutor implements CommandExecutor {
                 if (event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof InventoryHolder) {
                     event.setCancelled(true);
                     remove(event.getPlayer(), ((InventoryHolder) event.getClickedBlock().getState()).getInventory());
+                }
+                break;
+            case ADMIN_ON:
+                if (event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof InventoryHolder) {
+                    event.setCancelled(true);
+                    setAdmin(event.getPlayer(), ((InventoryHolder)event.getClickedBlock().getState()).getInventory(), true);
+                }
+                break;
+            case ADMIN_OFF:
+                if (event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof InventoryHolder) {
+                    event.setCancelled(true);
+                    setAdmin(event.getPlayer(), ((InventoryHolder)event.getClickedBlock().getState()).getInventory(), false);
                 }
                 break;
         }
@@ -93,6 +107,22 @@ public class FancyShopCommandExecutor implements CommandExecutor {
         clearPending(player);
     }
 
+    private void setAdmin(Player player, Inventory inv, boolean admin) {
+        if (!Shop.isShop(inv)) {
+            Chat.e(player, "That's not a shop!");
+        } else {
+            Shop shop = Shop.fromInventory(inv, player.getName());
+            shop.setAdmin(admin);
+            ShopRepository.store(shop);
+            if (admin) {
+                Chat.s(player, "Set to admin shop.");
+            } else {
+                Chat.s(player, "Set to normal shop.");
+            }
+        }
+        clearPending(player);
+    }
+
     private void remove(Player player, Command cmd, String label, String[] args) {
         if (!player.hasPermission("fancyshop.create")) { //not typo - can't remove if we can't create
             Chat.e(player, "You don't have permission!");
@@ -115,6 +145,22 @@ public class FancyShopCommandExecutor implements CommandExecutor {
         }
         Chat.i(player, "Right-click a chest to create a shop there.");
         setPending(player, PendingCommand.CREATE);
+    }
+
+    private void setAdmin(Player player, Command cmd, String label, String[] args) {
+        if (!player.hasPermission("fancyshop.setadmin")) {
+            Chat.e(player, "You don't have permission!");
+            return;
+        }
+        if (args.length == 1 || args.length == 2 && args[1].equals("true")) {
+            Chat.i(player, "Right-click a shop to make it an admin shop.");
+            setPending(player, PendingCommand.ADMIN_ON);
+        } else if (args.length == 2 && args[1].equals("false")) {
+            Chat.i(player, "Right-click a shop to make it a normal shop.");
+            setPending(player, PendingCommand.ADMIN_OFF);
+        } else {
+            Chat.e(player, "Usage: /fancyshop setadmin true|false");
+        }
     }
 
     private void setPending(Player player, PendingCommand cmd) {
@@ -149,5 +195,9 @@ public class FancyShopCommandExecutor implements CommandExecutor {
         Chat.i(sender, "/fancyshop: Create and manage shops.\n"+
                 "    /fancyshop create - Create a new shop.\n"+
                 "    /fancyshop remove - Remove a shop.");
+        if (sender instanceof Player && ((Player)sender).hasPermission("fancyshop.setadmin")) {
+            Chat.i(sender, "    /fancyshop setadmin true - Make a shop an admin shop.\n"+
+                    "    /fancyshop setadmin false - Make a shop a normal shop.");
+        }
     }
 }
