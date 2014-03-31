@@ -1,5 +1,9 @@
 package net.miscjunk.fancyshop;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,10 +16,12 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class FancyShopCommandExecutor implements CommandExecutor {
     enum PendingCommand { CREATE, REMOVE, ADMIN_ON, ADMIN_OFF };
     private FancyShop plugin;
+    boolean flagsInstalled = false;
     Map<String,PendingCommand> pending;
     Map<String,BukkitTask> tasks;
 
@@ -23,6 +29,14 @@ public class FancyShopCommandExecutor implements CommandExecutor {
         this.plugin = plugin;
         this.pending = new HashMap<String, PendingCommand>();
         this.tasks = new HashMap<String, BukkitTask>();
+        flagsInstalled = Bukkit.getServer().getPluginManager().isPluginEnabled("Flags");
+        if (flagsInstalled) {
+            Bukkit.getLogger().info("Found Flags, enabling region support");
+            io.github.alshain01.flags.Registrar flagsRegistrar = io.github.alshain01.flags.Flags.getRegistrar();
+            io.github.alshain01.flags.Flag flag = flagsRegistrar.register("FancyShop", "Allow creating shops", false, "FancyShop", "Entering shops area", "Leaving shops area");
+        } else {
+            Bukkit.getLogger().info("Flags is not installed, disabling region support");
+        }
     }
 
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -96,6 +110,8 @@ public class FancyShopCommandExecutor implements CommandExecutor {
     private void create(Player player, Inventory inv) {
         if (Shop.isShop(inv)) {
             Chat.e(player, "That's already a shop!");
+        } else if (!regionAllows(player, inv)) {
+            Chat.e(player, "You can't create shops here.");
         } else {
             Shop shop = Shop.fromInventory(inv, player.getName());
             ShopRepository.store(shop);
@@ -160,6 +176,34 @@ public class FancyShopCommandExecutor implements CommandExecutor {
             setPending(player, PendingCommand.ADMIN_OFF);
         } else {
             Chat.e(player, "Usage: /fancyshop setadmin true|false");
+        }
+    }
+
+    private boolean regionAllows(Player player, Inventory inv) {
+        if (!flagsInstalled) return true;
+        if (player.hasPermission("fancyshop.create.anywhere")) return true;
+        io.github.alshain01.flags.Registrar flagsRegistrar = io.github.alshain01.flags.Flags.getRegistrar();
+        io.github.alshain01.flags.Flag flag = flagsRegistrar.getFlag("FancyShop");
+        InventoryHolder h = inv.getHolder();
+        Location l;
+        io.github.alshain01.flags.area.Area area;
+        if (h instanceof BlockState) {
+            l = ((BlockState)h).getLocation();
+            area = io.github.alshain01.flags.CuboidType.getActive().getAreaAt(l);
+        } else if (h instanceof DoubleChest) {
+            l = ((DoubleChest)h).getLocation();
+            area = io.github.alshain01.flags.CuboidType.getActive().getAreaAt(l);
+        } else {
+            area = io.github.alshain01.flags.CuboidType.DEFAULT.getAreaAt(player.getLocation());
+        }
+        Set<String> trusted = area.getPlayerTrustList(flag);
+        if (trusted.contains(player.getName().toLowerCase())) {
+            return true;
+        } else {
+            for (String s : area.getPermissionTrustList(flag)) {
+                if (player.hasPermission(s)) return true;
+            }
+            return (trusted.isEmpty() && area.getValue(flag, false));
         }
     }
 

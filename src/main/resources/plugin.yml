@@ -5,6 +5,7 @@ main: net.miscjunk.fancyshop.FancyShop
 name: FancyShop
 startup: postworld
 version: '${pom.version}'
+softdepend: [Flags]
 commands:
     fancyshop:
         aliases: [fs, shop]
@@ -12,6 +13,9 @@ permissions:
     fancyshop.create:
         description: Create a shop.
         default: true
+    fancyshop.create.anywhere:
+        description: Create a shop, bypassing region permissions.
+        default: op
     fancyshop.use:
         description: Use other people's shops.
         default: true

@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.miscjunk.fancyshop</groupId>
     <artifactId>FancyShop</artifactId>
-    <version>0.3</version>
+    <version>0.4-SNAPSHOT</version>
     <name>FancyShop</name>
     <repositories>
         <repository>
@@ -12,6 +12,10 @@
         <repository>
             <id>Plugin Metrics</id>
             <url>http://repo.mcstats.org/content/repositories/public</url>
+        </repository>
+        <repository>
+            <id>flags-repo</id>
+            <url>http://pages.suddenlink.net/alshain01/flags/repository</url>
         </repository>
     </repositories>
     <build>
@@ -67,6 +71,18 @@
             <artifactId>metrics</artifactId>
             <version>R7</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.github.alshain01.flags</groupId>
+            <artifactId>Flags</artifactId>
+            <version>RELEASE</version>
+            <optional>true</optional>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>
