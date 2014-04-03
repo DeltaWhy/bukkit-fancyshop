@@ -22,7 +22,7 @@
     <orderEntry type="library" name="sqlite-jdbc-3.7.2" level="project" />
     <orderEntry type="library" name="Maven: org.bukkit:bukkit:1.7.2-R0.3" level="project" />
     <orderEntry type="library" name="Maven: org.mcstats.bukkit:metrics:R7" level="project" />
-    <orderEntry type="library" name="Maven: io.github.alshain01.flags:Flags:1.4.1" level="project" />
+    <orderEntry type="library" name="Maven: io.github.alshain01.flags:Flags:1.4.2" level="project" />
   </component>
 </module>
 

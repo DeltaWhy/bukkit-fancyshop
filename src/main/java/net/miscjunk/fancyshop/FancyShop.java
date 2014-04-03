@@ -84,8 +84,9 @@ public class FancyShop extends JavaPlugin implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerInteract2(PlayerInteractEvent event) {
         Player p = event.getPlayer();
-        if (!cmdExecutor.hasPending(p)) return;
         if (event.isCancelled()) return;
+        if (!canBeShop(event.getClickedBlock()) || event.getAction() != Action.RIGHT_CLICK_BLOCK || p.isSneaking()) return;
+        if (!cmdExecutor.hasPending(p)) return;
         cmdExecutor.onPlayerInteract(event);
     }
 
