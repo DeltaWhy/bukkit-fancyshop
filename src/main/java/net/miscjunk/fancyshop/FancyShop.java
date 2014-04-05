@@ -26,15 +26,22 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 public class FancyShop extends JavaPlugin implements Listener {
     FancyShopCommandExecutor cmdExecutor;
+    boolean allowExplosion;
+    boolean allowBreak;
+    boolean allowHoppers;
+
     public void onDisable() {
         ShopRepository.cleanup();
     }
 
     public void onEnable() {
+        this.saveDefaultConfig();
+        allowExplosion = this.getConfig().getBoolean("allow-explosion");
+        allowBreak = this.getConfig().getBoolean("allow-break");
+        allowHoppers = this.getConfig().getBoolean("allow-hoppers");
         getServer().getPluginManager().registerEvents(this, this);
         cmdExecutor = new FancyShopCommandExecutor(this);
         getCommand("fancyshop").setExecutor(cmdExecutor);
@@ -127,8 +134,21 @@ public class FancyShop extends JavaPlugin implements Listener {
         if (!canBeShop(event.getBlock())) return;
         Inventory inv = ((InventoryHolder)event.getBlock().getState()).getInventory();
         if (Shop.isShop(inv)) {
-            Chat.e(event.getPlayer(), "You can't break a shop chest. First remove the shop with /fancyshop remove.");
-            event.setCancelled(true);
+            Player player = event.getPlayer();
+            if (allowBreak) {
+                Shop shop = Shop.fromInventory(inv, player.getName());
+                if (!shop.getOwner().equals(player.getName()) && !player.hasPermission("fancyshop.remove")) {
+                    Chat.e(player, "You don't have permission to break that.");
+                    event.setCancelled(true);
+                } else {
+                    ShopRepository.remove(shop);
+                    Shop.removeShop(shop.getLocation());
+                    Chat.s(player, "Shop removed.");
+                }
+            } else {
+                Chat.e(player, "You can't break a shop chest. First remove the shop with /fancyshop remove.");
+                event.setCancelled(true);
+            }
         }
     }
 
@@ -140,8 +160,14 @@ public class FancyShop extends JavaPlugin implements Listener {
             if (!canBeShop(b)) continue;
             Inventory inv = ((InventoryHolder)b.getState()).getInventory();
             if (Shop.isShop(inv)) {
-                event.blockList().remove(i);
-                i--;
+                if (allowExplosion) {
+                    Shop shop = Shop.fromInventory(inv, "");
+                    ShopRepository.remove(shop);
+                    Shop.removeShop(shop.getLocation());
+                } else {
+                    event.blockList().remove(i);
+                    i--;
+                }
             }
         }
     }
@@ -156,6 +182,7 @@ public class FancyShop extends JavaPlugin implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         if (event.getBlock().getType() == Material.HOPPER) {
+            if (allowHoppers) return;
             Block above = event.getBlock().getRelative(BlockFace.UP);
             if (!canBeShop(above)) return;
             Inventory inv = ((InventoryHolder)above.getState()).getInventory();
@@ -187,6 +214,7 @@ public class FancyShop extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onInventoryMove(InventoryMoveItemEvent event) {
+        if (allowHoppers) return;
         if (event.getInitiator().getHolder() instanceof Hopper) return; // allow hoppers to work because only the owner can place them
         if (!Shop.isShop(event.getSource())) return;
         event.setCancelled(true);

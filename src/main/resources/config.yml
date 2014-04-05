@@ -1,0 +1,19 @@
+# General configuration
+
+# Allow explosions to break shops
+allow-explosion: false
+# Allow players to break shops without removing. Players still need the fancyshop.remove permission.
+# You should probably leave this false so players can't accidentally break their own shop and lose all their work.
+allow-break: false
+# Allow stealing from shops with hoppers. I don't know why you would want this.
+allow-hoppers: false
+
+# Currencies
+
+# Allow only the items specified in 'currencies' to be used as currencies.
+currency-whitelist: false
+currencies:
+    'Lapis Lazuli': '351:4'
+# Prevent basic items from being used as currencies. Items with damage values or NBT data are already disallowed unless
+# specifically allowed above.
+currency-blacklist: []
