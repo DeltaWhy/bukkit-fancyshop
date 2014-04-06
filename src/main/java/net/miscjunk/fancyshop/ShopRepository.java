@@ -5,13 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.sql.*;
-import java.util.Properties;
-import java.util.logging.Logger;
 
 public class ShopRepository {
     private static Plugin plugin;
@@ -106,9 +100,9 @@ public class ShopRepository {
     private static void storeDeal(Shop shop, Deal deal) throws SQLException {
         PreparedStatement stmt = db.prepareStatement("INSERT INTO deals (shop_id, item, buy_price, sell_price) VALUES (?,?,?,?)");
         stmt.setString(1, shop.getLocation().toString());
-        stmt.setString(2, Util.itemToString(deal.getItem()));
-        stmt.setString(3, Util.itemToString(deal.getBuyPrice()));
-        stmt.setString(4, Util.itemToString(deal.getSellPrice()));
+        stmt.setString(2, CurrencyManager.itemToString(deal.getItem()));
+        stmt.setString(3, CurrencyManager.itemToString(deal.getBuyPrice()));
+        stmt.setString(4, CurrencyManager.itemToString(deal.getSellPrice()));
         stmt.execute();
     }
 
@@ -140,9 +134,9 @@ public class ShopRepository {
             stmt.setString(1, location.toString());
             rs = stmt.executeQuery();
             while (rs.next()) {
-                ItemStack item = Util.stringToItem(rs.getString("item"));
-                ItemStack buyPrice = Util.stringToItem(rs.getString("buy_price"));
-                ItemStack sellPrice = Util.stringToItem(rs.getString("sell_price"));
+                ItemStack item = CurrencyManager.stringToItem(rs.getString("item"));
+                ItemStack buyPrice = CurrencyManager.stringToItem(rs.getString("buy_price"));
+                ItemStack sellPrice = CurrencyManager.stringToItem(rs.getString("sell_price"));
                 Deal d = new Deal(item, buyPrice, sellPrice);
                 shop.deals.add(d);
             }

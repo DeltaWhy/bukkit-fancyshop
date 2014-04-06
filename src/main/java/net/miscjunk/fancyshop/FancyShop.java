@@ -44,6 +44,7 @@ public class FancyShop extends JavaPlugin implements Listener {
         allowHoppers = this.getConfig().getBoolean("allow-hoppers");
         getServer().getPluginManager().registerEvents(this, this);
         cmdExecutor = new FancyShopCommandExecutor(this);
+        CurrencyManager.init(this);
         getCommand("fancyshop").setExecutor(cmdExecutor);
         ShopRepository.init(this);
         try {

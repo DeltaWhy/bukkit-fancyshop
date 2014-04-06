@@ -16,9 +16,6 @@ public class Deal {
     public Deal(ItemStack item) {
         this(item, (ItemStack)null, (ItemStack)null);
     }
-    public Deal(ItemStack item, String buyPrice, String sellPrice) {
-        this(item, Util.priceToItem(buyPrice), Util.priceToItem(sellPrice));
-    }
 
     public Deal(ItemStack item, ItemStack buyPrice, ItemStack sellPrice) {
         this.item = item;
@@ -39,9 +36,9 @@ public class Deal {
     public List<String> toLore(boolean admin) {
         List<String> lore = new ArrayList<String>();
         if (buyPrice != null)
-            lore.add(""+ChatColor.RESET+ChatColor.GREEN+"Buy: "+Util.itemToPrice(buyPrice));
+            lore.add(""+ChatColor.RESET+ChatColor.GREEN+"Buy: "+ CurrencyManager.getInstance().itemToPrice(buyPrice));
         if (sellPrice != null)
-            lore.add(""+ChatColor.RESET+ChatColor.BLUE+"Sell: "+Util.itemToPrice(sellPrice));
+            lore.add(""+ChatColor.RESET+ChatColor.BLUE+"Sell: "+ CurrencyManager.getInstance().itemToPrice(sellPrice));
         if (buyPrice != null && !admin) {
             if (available > 0) {
                 lore.add(""+available+" in stock");

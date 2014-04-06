@@ -237,20 +237,20 @@ public class ShopEditor implements InventoryHolder {
     }
 
     private void editBuyPrice(Player player, Deal deal, ItemStack item) {
-        if (Util.isCurrency(item)) {
+        if (CurrencyManager.getInstance().isCurrency(item)) {
             deal.setBuyPrice(item.clone());
             shop.refreshView();
             refreshView();
-            Chat.s(player, "Changed buy price to "+Util.itemToPrice(item)+".");
+            Chat.s(player, "Changed buy price to "+ CurrencyManager.getInstance().itemToPrice(item)+".");
         }
     }
 
     private void editSellPrice(Player player, Deal deal, ItemStack item) {
-        if (Util.isCurrency(item)) {
+        if (CurrencyManager.getInstance().isCurrency(item)) {
             deal.setSellPrice(item.clone());
             shop.refreshView();
             refreshView();
-            Chat.s(player, "Changed sell price to "+Util.itemToPrice(item)+".");
+            Chat.s(player, "Changed sell price to "+ CurrencyManager.getInstance().itemToPrice(item)+".");
         }
     }
 
