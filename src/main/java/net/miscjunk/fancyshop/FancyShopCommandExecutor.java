@@ -55,6 +55,8 @@ public class FancyShopCommandExecutor implements CommandExecutor {
             remove(p, cmd, label, args);
         } else if (args[0].equals("setadmin")) {
             setAdmin(p, cmd, label, args);
+        } else if (args[0].equals("currency")) {
+            currency(p, cmd, label, args);
         } else {
             printUsage(sender);
         }
@@ -179,6 +181,28 @@ public class FancyShopCommandExecutor implements CommandExecutor {
         }
     }
 
+    private void currency(Player player, Command cmd, String label, String[] args) {
+        if (!player.hasPermission("fancyshop.currency")) {
+            Chat.e(player, "You don't have permission!");
+            return;
+        }
+        if (args.length != 2) {
+            Chat.e(player, "Usage: /fancyshop currency <name>");
+            return;
+        }
+        String name = args[1].trim();
+        if (CurrencyManager.getInstance().isCustomCurrency(name)) {
+            Chat.e(player, "That name is already a currency!");
+            return;
+        }
+        if (player.getItemInHand() == null || player.getItemInHand().getAmount() == 0) {
+            Chat.e(player, "You aren't holding anything!");
+            return;
+        }
+        CurrencyManager.getInstance().addCustomCurrency(name, player.getItemInHand());
+        Chat.s(player, "Created currency \""+name+"\".");
+    }
+
     private boolean regionAllows(Player player, Inventory inv) {
         if (!flagsInstalled) return true;
         if (player.hasPermission("fancyshop.create.anywhere")) return true;
@@ -242,6 +266,9 @@ public class FancyShopCommandExecutor implements CommandExecutor {
         if (sender instanceof Player && ((Player)sender).hasPermission("fancyshop.setadmin")) {
             Chat.i(sender, "    /fancyshop setadmin true - Make a shop an admin shop.\n"+
                     "    /fancyshop setadmin false - Make a shop a normal shop.");
+        }
+        if (sender instanceof Player && ((Player)sender).hasPermission("fancyshop.currency")) {
+            Chat.i(sender, "    /fancyshop currency <name> - Add the held item as a custom currency.");
         }
     }
 }

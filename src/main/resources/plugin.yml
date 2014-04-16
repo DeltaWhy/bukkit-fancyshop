@@ -28,3 +28,6 @@ permissions:
     fancyshop.setadmin:
         description: Create unlimited (admin) shops.
         default: op
+    fancyshop.currency:
+        description: Add custom currencies.
+        default: op

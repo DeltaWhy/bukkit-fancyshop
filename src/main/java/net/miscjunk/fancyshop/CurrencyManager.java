@@ -84,6 +84,19 @@ public class CurrencyManager {
         return true;
     }
 
+    public boolean isCustomCurrency(String name) {
+        return currencies.containsKey(name);
+    }
+
+    public void addCustomCurrency(String name, ItemStack item) {
+        ItemStack it = item.clone();
+        it.setAmount(1);
+        currencies.put(name, item);
+        ConfigurationSection section = plugin.getConfig().getConfigurationSection("currencies");
+        section.set(name, itemToString(it));
+        plugin.saveConfig();
+    }
+
     public static String itemToString(ItemStack item) {
         YamlConfiguration c = new YamlConfiguration();
         c.set("item", item);
