@@ -32,6 +32,7 @@ public class FancyShop extends JavaPlugin implements Listener {
     boolean allowExplosion;
     boolean allowBreak;
     boolean allowHoppers;
+    boolean allowHoppersIn;
 
     public void onDisable() {
         ShopRepository.cleanup();
@@ -42,6 +43,7 @@ public class FancyShop extends JavaPlugin implements Listener {
         allowExplosion = this.getConfig().getBoolean("allow-explosion");
         allowBreak = this.getConfig().getBoolean("allow-break");
         allowHoppers = this.getConfig().getBoolean("allow-hoppers");
+        allowHoppersIn = this.getConfig().getBoolean("allow-hoppers-in");
         getServer().getPluginManager().registerEvents(this, this);
         cmdExecutor = new FancyShopCommandExecutor(this);
         CurrencyManager.init(this);
@@ -216,8 +218,8 @@ public class FancyShop extends JavaPlugin implements Listener {
     @EventHandler
     public void onInventoryMove(InventoryMoveItemEvent event) {
         if (allowHoppers) return;
-        if (event.getInitiator().getHolder() instanceof Hopper) return; // allow hoppers to work because only the owner can place them
-        if (!Shop.isShop(event.getSource())) return;
+        if (allowHoppersIn && event.getInitiator().getHolder() instanceof Hopper) return; // allow hoppers to work because only the owner can place them
+        if (!Shop.isShop(event.getSource()) && !Shop.isShop(event.getDestination())) return;
         event.setCancelled(true);
     }
 
