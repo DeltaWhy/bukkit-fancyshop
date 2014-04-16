@@ -74,6 +74,7 @@ public class CurrencyManager {
     }
 
     public boolean isCurrency(ItemStack item) {
+        if (item == null) return false;
         if (blacklist.contains(item.getTypeId())) return false;
         for (ItemStack i : currencies.values()) {
             if (i.isSimilar(item)) return true;

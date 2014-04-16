@@ -137,6 +137,8 @@ public class ShopRepository {
                 ItemStack item = CurrencyManager.stringToItem(rs.getString("item"));
                 ItemStack buyPrice = CurrencyManager.stringToItem(rs.getString("buy_price"));
                 ItemStack sellPrice = CurrencyManager.stringToItem(rs.getString("sell_price"));
+                if (!CurrencyManager.getInstance().isCurrency(buyPrice)) buyPrice = null;
+                if (!CurrencyManager.getInstance().isCurrency(sellPrice)) sellPrice = null;
                 Deal d = new Deal(item, buyPrice, sellPrice);
                 shop.deals.add(d);
             }
