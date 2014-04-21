@@ -4,7 +4,7 @@
   <groupId>net.miscjunk.fancyshop</groupId>
   <artifactId>FancyShop</artifactId>
   <name>FancyShop</name>
-  <version>0.4-SNAPSHOT</version>
+  <version>0.4</version>
   <build>
     <resources>
       <resource>
