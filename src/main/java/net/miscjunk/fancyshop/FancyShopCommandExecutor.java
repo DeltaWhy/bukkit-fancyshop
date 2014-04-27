@@ -95,8 +95,8 @@ public class FancyShopCommandExecutor implements CommandExecutor {
 
     private void remove(Player player, Inventory inv) {
         if (Shop.isShop(inv)) {
-            Shop shop = Shop.fromInventory(inv, player.getName());
-            if (!shop.getOwner().equals(player.getName()) && !player.hasPermission("fancyshop.remove")) {
+            Shop shop = Shop.fromInventory(inv);
+            if (!shop.getOwner().equals(player.getUniqueId()) && !player.hasPermission("fancyshop.remove")) {
                 Chat.e(player, "That's not your shop!");
             } else {
                 ShopRepository.remove(shop);
@@ -115,7 +115,7 @@ public class FancyShopCommandExecutor implements CommandExecutor {
         } else if (!regionAllows(player, inv)) {
             Chat.e(player, "You can't create shops here.");
         } else {
-            Shop shop = Shop.fromInventory(inv, player.getName());
+            Shop shop = Shop.fromInventory(inv, player.getUniqueId(), player.getName()+"'s Shop");
             ShopRepository.store(shop);
             Chat.s(player, "Shop created.");
             Chat.i(player, "Right-click your shop with a stick to see it as a customer.");
@@ -129,7 +129,7 @@ public class FancyShopCommandExecutor implements CommandExecutor {
         if (!Shop.isShop(inv)) {
             Chat.e(player, "That's not a shop!");
         } else {
-            Shop shop = Shop.fromInventory(inv, player.getName());
+            Shop shop = Shop.fromInventory(inv);
             shop.setAdmin(admin);
             ShopRepository.store(shop);
             if (admin) {

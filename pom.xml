@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.miscjunk.fancyshop</groupId>
     <artifactId>FancyShop</artifactId>
-    <version>0.4</version>
+    <version>0.5-SNAPSHOT</version>
     <name>FancyShop</name>
     <repositories>
         <repository>
@@ -62,7 +62,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.7.2-R0.3</version>
+            <version>1.7.9-R0.1-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

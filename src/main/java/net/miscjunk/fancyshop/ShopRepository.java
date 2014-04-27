@@ -6,6 +6,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.sql.*;
+import java.util.UUID;
 
 public class ShopRepository {
     private static Plugin plugin;
@@ -49,7 +50,7 @@ public class ShopRepository {
         ResultSet rs = stmt.executeQuery("PRAGMA user_version");
         if (rs.next()) {
             int version = rs.getInt(1);
-            if (version > 2) {
+            if (version > 3) {
                 throw new RuntimeException("Database is newer than plugin version");
             }
             if (version == 0) {
@@ -72,6 +73,21 @@ public class ShopRepository {
                 stmt.execute("ALTER TABLE shops ADD COLUMN is_admin INT NOT NULL DEFAULT 0");
                 stmt.execute("PRAGMA user_version=2");
             }
+            if (version == 2) {
+                stmt.execute("ALTER TABLE shops ADD COLUMN name TEXT NOT NULL DEFAULT ''");
+                rs = stmt.executeQuery("SELECT * FROM shops");
+                while (rs.next()) {
+                    String ownerName = rs.getString("owner");
+                    UUID ownerId = plugin.getServer().getOfflinePlayer(ownerName).getUniqueId();
+                    String name = ownerName+"'s Shop";
+                    PreparedStatement update = db.prepareStatement("UPDATE shops SET owner=?, name=? WHERE location=?");
+                    update.setString(1, ownerId.toString());
+                    update.setString(2, name);
+                    update.setString(3, rs.getString("location"));
+                    update.execute();
+                }
+                stmt.execute("PRAGMA user_version=3");
+            }
         } else {
             throw new RuntimeException("Couldn't get database schema version");
         }
@@ -79,10 +95,11 @@ public class ShopRepository {
 
     public static boolean store(Shop shop) {
         try {
-            PreparedStatement stmt = db.prepareStatement("INSERT OR REPLACE INTO shops VALUES (?, ?, ?)");
+            PreparedStatement stmt = db.prepareStatement("INSERT OR REPLACE INTO shops VALUES (?, ?, ?, ?)");
             stmt.setString(1, shop.getLocation().toString());
-            stmt.setString(2, shop.getOwner());
+            stmt.setString(2, shop.getOwner().toString());
             stmt.setBoolean(3, shop.isAdmin());
+            stmt.setString(4, shop.getName());
             stmt.execute();
             stmt = db.prepareStatement("DELETE FROM deals WHERE shop_id=?");
             stmt.setString(1, shop.getLocation().toString());
@@ -127,9 +144,10 @@ public class ShopRepository {
             stmt.setString(1, location.toString());
             ResultSet rs = stmt.executeQuery();
             if (!rs.next()) return null;
-            String owner = rs.getString("owner");
+            UUID owner = UUID.fromString(rs.getString("owner"));
             boolean admin = rs.getBoolean("is_admin");
-            Shop shop = new Shop(location, inv, owner, admin);
+            String name = rs.getString("name");
+            Shop shop = new Shop(location, inv, owner, name, admin);
             stmt = db.prepareStatement("SELECT * FROM deals WHERE shop_id=?");
             stmt.setString(1, location.toString());
             rs = stmt.executeQuery();

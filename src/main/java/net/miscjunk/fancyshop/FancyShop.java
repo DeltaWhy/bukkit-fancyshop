@@ -63,8 +63,8 @@ public class FancyShop extends JavaPlugin implements Listener {
         Inventory inv = ((InventoryHolder)event.getClickedBlock().getState()).getInventory();
         if (event.getPlayer().isSneaking()) {
             if (Shop.isShop(inv)) {
-                Shop shop = Shop.fromInventory(inv, event.getPlayer().getName());
-                if (!shop.getOwner().equals(event.getPlayer().getName()) && !event.getPlayer().hasPermission("fancyshop.open")) {
+                Shop shop = Shop.fromInventory(inv, event.getPlayer().getUniqueId(), event.getPlayer().getName()+"'s Shop");
+                if (!shop.getOwner().equals(event.getPlayer().getUniqueId()) && !event.getPlayer().hasPermission("fancyshop.open")) {
                     event.setCancelled(true);
                     Chat.e(event.getPlayer(), "You don't have permission to open this shop chest.");
                 }
@@ -77,8 +77,8 @@ public class FancyShop extends JavaPlugin implements Listener {
                 if (Shop.isShop(inv)) {
                     event.setCancelled(true);
                     if (p.hasPermission("fancyshop.use")) {
-                        Shop shop = Shop.fromInventory(inv, p.getName());
-                        if (p.getName().equals(shop.getOwner()) && event.getMaterial() != Material.STICK) {
+                        Shop shop = Shop.fromInventory(inv);
+                        if (p.getUniqueId().equals(shop.getOwner()) && event.getMaterial() != Material.STICK) {
                             shop.edit(p);
                         } else {
                             shop.open(p);
@@ -122,7 +122,7 @@ public class FancyShop extends JavaPlugin implements Listener {
     public void onInventoryClose(InventoryCloseEvent event) {
         if (Shop.isShop(event.getInventory())) {
             // update shop view after using chest
-            Shop shop = Shop.fromInventory(event.getInventory(), "");
+            Shop shop = Shop.fromInventory(event.getInventory());
             shop.refreshView();
             shop.refreshEditor();
         } else if (event.getInventory().getHolder() instanceof ShopEditor) {
@@ -139,8 +139,8 @@ public class FancyShop extends JavaPlugin implements Listener {
         if (Shop.isShop(inv)) {
             Player player = event.getPlayer();
             if (allowBreak) {
-                Shop shop = Shop.fromInventory(inv, player.getName());
-                if (!shop.getOwner().equals(player.getName()) && !player.hasPermission("fancyshop.remove")) {
+                Shop shop = Shop.fromInventory(inv);
+                if (!shop.getOwner().equals(player.getUniqueId()) && !player.hasPermission("fancyshop.remove")) {
                     Chat.e(player, "You don't have permission to break that.");
                     event.setCancelled(true);
                 } else {
@@ -164,7 +164,7 @@ public class FancyShop extends JavaPlugin implements Listener {
             Inventory inv = ((InventoryHolder)b.getState()).getInventory();
             if (Shop.isShop(inv)) {
                 if (allowExplosion) {
-                    Shop shop = Shop.fromInventory(inv, "");
+                    Shop shop = Shop.fromInventory(inv);
                     ShopRepository.remove(shop);
                     Shop.removeShop(shop.getLocation());
                 } else {
@@ -190,8 +190,8 @@ public class FancyShop extends JavaPlugin implements Listener {
             if (!canBeShop(above)) return;
             Inventory inv = ((InventoryHolder)above.getState()).getInventory();
             if (!Shop.isShop(inv)) return;
-            Shop shop = Shop.fromInventory(inv, "");
-            if (shop.getOwner().equals(event.getPlayer().getName())) return; // we'll assume they know what they're doing
+            Shop shop = Shop.fromInventory(inv);
+            if (shop.getOwner().equals(event.getPlayer().getUniqueId())) return; // we'll assume they know what they're doing
             event.setCancelled(true);
             Chat.e(event.getPlayer(), "You can't place that here.");
         } else if (event.getBlock().getType() == Material.CHEST || event.getBlock().getType() == Material.TRAPPED_CHEST) {
@@ -200,9 +200,9 @@ public class FancyShop extends JavaPlugin implements Listener {
             DoubleChestInventory dc = (DoubleChestInventory)inv;
             Shop shop;
             if (Shop.isShop(dc.getLeftSide())) {
-                shop = Shop.fromInventory(dc.getLeftSide(), "");
+                shop = Shop.fromInventory(dc.getLeftSide());
             } else if (Shop.isShop(dc.getRightSide())) {
-                shop = Shop.fromInventory(dc.getRightSide(), "");
+                shop = Shop.fromInventory(dc.getRightSide());
             } else {
                 return;
             }

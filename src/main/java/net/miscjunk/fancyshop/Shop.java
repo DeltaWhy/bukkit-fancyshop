@@ -21,12 +21,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class Shop implements InventoryHolder {
     ShopLocation location;
     Inventory sourceInv;
     Inventory viewInv;
-    String owner;
+    UUID owner;
+    String name;
     boolean admin;
     List<Deal> deals;
     Map<Integer, Deal> dealMap;
@@ -34,18 +36,18 @@ public class Shop implements InventoryHolder {
 
     static Map<ShopLocation, Shop> shopMap;
 
-    public Shop(ShopLocation location, Inventory inv, String owner, boolean admin) {
+    public Shop(ShopLocation location, Inventory inv, UUID owner, String name, boolean admin) {
         this.location = location;
         this.owner = owner;
+        this.name = name;
         this.admin = admin;
         sourceInv = inv;
-        String name;
-        viewInv = Bukkit.createInventory(this, 27, owner+"'s Shop");
+        viewInv = Bukkit.createInventory(this, 27, name);
         deals = new ArrayList<Deal>();
         refreshView();
     }
 
-    public static Shop fromInventory(Inventory inv, String owner) {
+    public static Shop fromInventory(Inventory inv, UUID owner, String name) {
         if (shopMap == null) shopMap = new HashMap<ShopLocation, Shop>();
         InventoryHolder h = inv.getHolder();
         Location l;
@@ -61,9 +63,28 @@ public class Shop implements InventoryHolder {
             return shopMap.get(loc);
         } else {
             Shop shop = ShopRepository.load(loc, inv);
-            if (shop == null) shop = new Shop(loc, inv, owner, false);
+            if (shop == null) shop = new Shop(loc, inv, owner, name, false);
             shopMap.put(loc, shop);
             return shop;
+        }
+    }
+
+    public static Shop fromInventory(Inventory inv) {
+        if (shopMap == null) shopMap = new HashMap<ShopLocation, Shop>();
+        InventoryHolder h = inv.getHolder();
+        Location l;
+        if (h instanceof BlockState) {
+            l = ((BlockState)h).getLocation();
+        } else if (h instanceof DoubleChest) {
+            l = ((DoubleChest)h).getLocation();
+        } else {
+            return null;
+        }
+        ShopLocation loc = new ShopLocation(l);
+        if (shopMap.containsKey(loc) && shopMap.get(loc) != null) {
+            return shopMap.get(loc);
+        } else {
+            return null;
         }
     }
 
@@ -100,7 +121,15 @@ public class Shop implements InventoryHolder {
         return viewInv;
     }
 
-    public String getOwner() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public UUID getOwner() {
         return owner;
     }
 
