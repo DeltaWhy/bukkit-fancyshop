@@ -9,6 +9,8 @@ allow-break: false
 allow-hoppers: false
 # Allow restocking a shop with hoppers/droppers.
 allow-hoppers-in: true
+# Locale
+locale: en_US
 
 # Currencies
 

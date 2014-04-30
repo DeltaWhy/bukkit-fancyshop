@@ -1,0 +1,93 @@
+en_US:
+    translator: DeltaWhy
+    break:
+        confirm: "Shop removed."
+        permission: "You don't have permission to break that."
+        remove: "You can't break a shop chest. First remove the shop with /fancyshop remove."
+    place:
+        confirm: "Extended shop."
+        deny: "You can't place that here."
+    open:
+        permission: "You don't have permission to open this shop chest."
+    use:
+        permission: "You don't have permission to use this shop."
+    create:
+        confirm: "Shop created."
+        confirm2: "Right-click your shop with a stick to see it as a customer."
+        confirm3: "Shift-right-click to open the chest to manage inventory."
+        exists: "That's already a shop!"
+        permission: "You don't have permission!"
+        prompt: "Right-click a chest to create a shop there."
+        region: "You can't create shops here."
+        usage: "Usage: /fancyshop create"
+    currency:
+        confirm: "Created currency %s."
+        empty: "You aren't holding anything!"
+        exists: "That name is already a currency!"
+        permission: "You don't have permission!"
+        usage: "Usage: /fancyshop currency <name>"
+    remove:
+        confirm: "Shop removed."
+        no-shop: "That's not a shop!"
+        owner: "That's not your shop!"
+        permission: "You don't have permission!"
+        prompt: "Right-click a shop to remove it."
+        usage: "Usage: /fancyshop remove"
+    setadmin:
+        confirm-false: "Set to normal shop."
+        confirm-true: "Set to admin shop."
+        no-shop: "That's not a shop!"
+        permission: "You don't have permission!"
+        prompt-false: "Right-click a shop to make it a normal shop."
+        prompt-true: "Right-click a shop to make it an admin shop."
+        usage: "Usage: /fancyshop setadmin true|false"
+    buy:
+        enough: "You don't have enough!"
+        room: "Not enough room in shop."
+        stock: "Out of stock."
+    sell:
+        enough: "You don't have enough!"
+        room: "Not enough room in shop."
+        stock: "The shop is out of money."
+    edit:
+        title: "Manage Shop"
+        add:
+            confirm: "Added deal."
+        buy:
+            confirm: "Changed buy price to %s."
+        amount:
+            confirm: "Changed amount to %d."
+        sell:
+            confirm: "Changed sell price to %s."
+        remove:
+            confirm: "Removed deal."
+            description: "Click to remove"
+        buttons:
+            inventory:
+                title: "Inventory"
+                description: "Click to access shop chest"
+            buy:
+                title: "Editing buy prices"
+                description: "Click to edit sell prices"
+            sell:
+                title: "Editing sell prices"
+                description: "Click to edit buy prices"
+            remove:
+                title: "Remove"
+                description: "Click to remove deals"
+            done:
+                title: "Done"
+    deal:
+        buy: "Buy: %s"
+        sell: "Sell: %s"
+        stock: "%d in stock"
+        no-stock: "Out of stock!"
+        buying: "Buying %d"
+        not-buying: "Not buying"
+        no-price: "Price not set"
+    shop:
+        default-name: "%s's Shop"
+    usage:
+        main: "/fancyshop: Create and manage shops.\n    /fancyshop create - Create a new shop.\n    /fancyshop remove - Remove a shop."
+        setadmin: "    /fancyshop setadmin true - Make a shop an admin shop.\n    /fancyshop setadmin false - Make a shop a normal shop."
+        currency: "    /fancyshop currency <name> - Add the held item as a custom currency."

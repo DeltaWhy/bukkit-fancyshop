@@ -97,29 +97,29 @@ public class FancyShopCommandExecutor implements CommandExecutor {
         if (Shop.isShop(inv)) {
             Shop shop = Shop.fromInventory(inv);
             if (!shop.getOwner().equals(player.getUniqueId()) && !player.hasPermission("fancyshop.remove")) {
-                Chat.e(player, "That's not your shop!");
+                Chat.e(player, I18n.s("remove.owner"));
             } else {
                 ShopRepository.remove(shop);
                 Shop.removeShop(shop.getLocation());
-                Chat.s(player, "Shop removed.");
+                Chat.s(player, I18n.s("remove.confirm"));
             }
         } else {
-            Chat.e(player, "That's not a shop!");
+            Chat.e(player, I18n.s("remove.no-shop"));
         }
         clearPending(player);
     }
 
     private void create(Player player, Inventory inv) {
         if (Shop.isShop(inv)) {
-            Chat.e(player, "That's already a shop!");
+            Chat.e(player, I18n.s("create.exists"));
         } else if (!regionAllows(player, inv)) {
-            Chat.e(player, "You can't create shops here.");
+            Chat.e(player, I18n.s("create.region"));
         } else {
-            Shop shop = Shop.fromInventory(inv, player.getUniqueId(), player.getName()+"'s Shop");
+            Shop shop = Shop.fromInventory(inv, player.getUniqueId());
             ShopRepository.store(shop);
-            Chat.s(player, "Shop created.");
-            Chat.i(player, "Right-click your shop with a stick to see it as a customer.");
-            Chat.i(player, "Shift-right-click to open the chest to manage inventory.");
+            Chat.s(player, I18n.s("create.confirm"));
+            Chat.i(player, I18n.s("create.confirm2"));
+            Chat.i(player, I18n.s("create.confirm3"));
             shop.edit(player);
         }
         clearPending(player);
@@ -127,15 +127,15 @@ public class FancyShopCommandExecutor implements CommandExecutor {
 
     private void setAdmin(Player player, Inventory inv, boolean admin) {
         if (!Shop.isShop(inv)) {
-            Chat.e(player, "That's not a shop!");
+            Chat.e(player, I18n.s("setadmin.no-shop"));
         } else {
             Shop shop = Shop.fromInventory(inv);
             shop.setAdmin(admin);
             ShopRepository.store(shop);
             if (admin) {
-                Chat.s(player, "Set to admin shop.");
+                Chat.s(player, "setadmin.confirm-true");
             } else {
-                Chat.s(player, "Set to normal shop.");
+                Chat.s(player, "setadmin.confirm-false");
             }
         }
         clearPending(player);
@@ -143,64 +143,64 @@ public class FancyShopCommandExecutor implements CommandExecutor {
 
     private void remove(Player player, Command cmd, String label, String[] args) {
         if (!player.hasPermission("fancyshop.create")) { //not typo - can't remove if we can't create
-            Chat.e(player, "You don't have permission!");
+            Chat.e(player, I18n.s("remove.permission"));
             return;
         } else if (args.length > 1) {
-            Chat.e(player, "Usage: /fancyshop remove");
+            Chat.e(player, I18n.s("remove.usage"));
             return;
         }
-        Chat.i(player, "Right-click a shop to remove it.");
+        Chat.i(player, I18n.s("remove.prompt"));
         setPending(player, PendingCommand.REMOVE);
     }
 
     private void create(Player player, Command cmd, String label, String[] args) {
         if (!player.hasPermission("fancyshop.create")) {
-            Chat.e(player, "You don't have permission!");
+            Chat.e(player, I18n.s("create.permission"));
             return;
         } else if (args.length > 1) {
-            Chat.e(player, "Usage: /fancyshop create");
+            Chat.e(player, I18n.s("create.usage"));
             return;
         }
-        Chat.i(player, "Right-click a chest to create a shop there.");
+        Chat.i(player, I18n.s("create.prompt"));
         setPending(player, PendingCommand.CREATE);
     }
 
     private void setAdmin(Player player, Command cmd, String label, String[] args) {
         if (!player.hasPermission("fancyshop.setadmin")) {
-            Chat.e(player, "You don't have permission!");
+            Chat.e(player, I18n.s("setadmin.permission"));
             return;
         }
         if (args.length == 1 || args.length == 2 && args[1].equals("true")) {
-            Chat.i(player, "Right-click a shop to make it an admin shop.");
+            Chat.i(player, I18n.s("setadmin.prompt-true"));
             setPending(player, PendingCommand.ADMIN_ON);
         } else if (args.length == 2 && args[1].equals("false")) {
-            Chat.i(player, "Right-click a shop to make it a normal shop.");
+            Chat.i(player, I18n.s("setadmin.prompt-false"));
             setPending(player, PendingCommand.ADMIN_OFF);
         } else {
-            Chat.e(player, "Usage: /fancyshop setadmin true|false");
+            Chat.e(player, I18n.s("setadmin.usage"));
         }
     }
 
     private void currency(Player player, Command cmd, String label, String[] args) {
         if (!player.hasPermission("fancyshop.currency")) {
-            Chat.e(player, "You don't have permission!");
+            Chat.e(player, I18n.s("currency.permission"));
             return;
         }
         if (args.length != 2) {
-            Chat.e(player, "Usage: /fancyshop currency <name>");
+            Chat.e(player, I18n.s("currency.usage"));
             return;
         }
         String name = args[1].trim();
         if (CurrencyManager.getInstance().isCustomCurrency(name)) {
-            Chat.e(player, "That name is already a currency!");
+            Chat.e(player, I18n.s("currency.exists"));
             return;
         }
         if (player.getItemInHand() == null || player.getItemInHand().getAmount() == 0) {
-            Chat.e(player, "You aren't holding anything!");
+            Chat.e(player, I18n.s("currency.empty"));
             return;
         }
         CurrencyManager.getInstance().addCustomCurrency(name, player.getItemInHand());
-        Chat.s(player, "Created currency \""+name+"\".");
+        Chat.s(player, I18n.s("currency.confirm", name));
     }
 
     private boolean regionAllows(Player player, Inventory inv) {
@@ -260,15 +260,12 @@ public class FancyShopCommandExecutor implements CommandExecutor {
     }
 
     public void printUsage(CommandSender sender) {
-        Chat.i(sender, "/fancyshop: Create and manage shops.\n"+
-                "    /fancyshop create - Create a new shop.\n"+
-                "    /fancyshop remove - Remove a shop.");
+        Chat.i(sender, I18n.s("usage.main"));
         if (sender instanceof Player && ((Player)sender).hasPermission("fancyshop.setadmin")) {
-            Chat.i(sender, "    /fancyshop setadmin true - Make a shop an admin shop.\n"+
-                    "    /fancyshop setadmin false - Make a shop a normal shop.");
+            Chat.i(sender, I18n.s("usage.setadmin"));
         }
         if (sender instanceof Player && ((Player)sender).hasPermission("fancyshop.currency")) {
-            Chat.i(sender, "    /fancyshop currency <name> - Add the held item as a custom currency.");
+            Chat.i(sender, I18n.s("usage.currency"));
         }
     }
 }

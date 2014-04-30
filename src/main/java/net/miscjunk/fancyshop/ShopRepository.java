@@ -79,7 +79,7 @@ public class ShopRepository {
                 while (rs.next()) {
                     String ownerName = rs.getString("owner");
                     UUID ownerId = plugin.getServer().getOfflinePlayer(ownerName).getUniqueId();
-                    String name = ownerName+"'s Shop";
+                    String name = I18n.s("shop.default-name", ownerName);
                     PreparedStatement update = db.prepareStatement("UPDATE shops SET owner=?, name=? WHERE location=?");
                     update.setString(1, ownerId.toString());
                     update.setString(2, name);

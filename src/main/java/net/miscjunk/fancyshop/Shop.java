@@ -47,7 +47,7 @@ public class Shop implements InventoryHolder {
         refreshView();
     }
 
-    public static Shop fromInventory(Inventory inv, UUID owner, String name) {
+    public static Shop fromInventory(Inventory inv, UUID owner) {
         if (shopMap == null) shopMap = new HashMap<ShopLocation, Shop>();
         InventoryHolder h = inv.getHolder();
         Location l;
@@ -63,6 +63,7 @@ public class Shop implements InventoryHolder {
             return shopMap.get(loc);
         } else {
             Shop shop = ShopRepository.load(loc, inv);
+            String name = I18n.s("shop.default-name", Bukkit.getServer().getOfflinePlayer(owner).getName());
             if (shop == null) shop = new Shop(loc, inv, owner, name, false);
             shopMap.put(loc, shop);
             return shop;
@@ -264,11 +265,11 @@ public class Shop implements InventoryHolder {
         ItemStack cursor = view.getCursor();
         if (deal.getItem().isSimilar(cursor)) {
             if (deal.getItem().getAmount() > cursor.getAmount()) {
-                Chat.e(p, "You don't have enough!");
+                Chat.e(p, I18n.s("sell.amount"));
                 return false;
             } else {
                 if (!admin && !sourceInv.containsAtLeast(deal.getSellPrice(), deal.getSellPrice().getAmount())) {
-                    Chat.e(p, "The shop is out of money.");
+                    Chat.e(p, I18n.s("sell.stock"));
                     return false;
                 } else {
                     // try depositing item
@@ -276,7 +277,7 @@ public class Shop implements InventoryHolder {
                     if (!admin) {
                         overflow = sourceInv.addItem(deal.getItem().clone());
                         if (!overflow.isEmpty()) {
-                            Chat.e(p, "Not enough room in shop.");
+                            Chat.e(p, I18n.s("sell.room"));
                             int numOverflowed = 0;
                             for (ItemStack it : overflow.values()) {
                                 if (it.isSimilar(deal.getItem())) numOverflowed += it.getAmount();
@@ -320,11 +321,11 @@ public class Shop implements InventoryHolder {
         ItemStack cursor = view.getCursor();
         if (deal.getBuyPrice().isSimilar(cursor)) {
             if (deal.getBuyPrice().getAmount() > cursor.getAmount()) {
-                Chat.e(p, "You don't have enough!");
+                Chat.e(p, I18n.s("buy.enough"));
                 return false;
             } else {
                 if (!admin && !sourceInv.containsAtLeast(deal.getItem(), deal.getItem().getAmount())) {
-                    Chat.e(p, "Out of stock.");
+                    Chat.e(p, I18n.s("buy.stock"));
                     return false;
                 } else {
                     // try depositing currency
@@ -332,7 +333,7 @@ public class Shop implements InventoryHolder {
                     if (!admin) {
                         overflow = sourceInv.addItem(deal.getBuyPrice().clone());
                         if (!overflow.isEmpty()) {
-                            Chat.e(p, "Not enough room in shop.");
+                            Chat.e(p, I18n.s("buy.room"));
                             int numOverflowed = 0;
                             for (ItemStack it : overflow.values()) {
                                 if (it.isSimilar(deal.getBuyPrice())) numOverflowed += it.getAmount();

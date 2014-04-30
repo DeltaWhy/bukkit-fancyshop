@@ -37,7 +37,7 @@ public class ShopEditor implements InventoryHolder {
     public ShopEditor(Shop shop) {
         this.shop = shop;
         this.state = State.BUY;
-        viewInv = Bukkit.createInventory(this, 36, "Manage Shop");
+        viewInv = Bukkit.createInventory(this, 36, I18n.s("edit.title"));
         chestBtn = new ItemStack(Material.CHEST, 1);
         buyBtn = new ItemStack(Material.WOOL, 1, (short)5); //green
         sellBtn = new ItemStack(Material.WOOL, 1, (short)11); //blue
@@ -45,34 +45,34 @@ public class ShopEditor implements InventoryHolder {
         doneBtn = new ItemStack(Material.WOOL, 1, (short)5);
 
         ItemMeta meta = chestBtn.getItemMeta();
-        meta.setDisplayName("Inventory");
+        meta.setDisplayName(I18n.s("edit.buttons.inventory.title"));
         List<String> lore = new ArrayList<String>();
-        lore.add("Click to access shop chest");
+        lore.add(I18n.s("edit.buttons.inventory.description"));
         meta.setLore(lore);
         chestBtn.setItemMeta(meta);
 
 
         meta = buyBtn.getItemMeta();
-        meta.setDisplayName("Editing buy prices");
-        lore.clear(); lore.add("Click to edit sell prices");
+        meta.setDisplayName(I18n.s("edit.buttons.buy.title"));
+        lore.clear(); lore.add(I18n.s("edit.buttons.buy.description"));
         meta.setLore(lore);
         buyBtn.setItemMeta(meta);
 
         meta = sellBtn.getItemMeta();
-        meta.setDisplayName("Editing sell prices");
-        lore.clear(); lore.add("Click to edit buy prices");
+        meta.setDisplayName(I18n.s("edit.buttons.sell.title"));
+        lore.clear(); lore.add(I18n.s("edit.buttons.sell.description"));
         meta.setLore(lore);
         sellBtn.setItemMeta(meta);
 
         meta = removeBtn.getItemMeta();
-        meta.setDisplayName("Remove");
+        meta.setDisplayName(I18n.s("edit.buttons.remove.title"));
         lore.clear();
-        lore.add("Click to remove deals");
+        lore.add(I18n.s("edit.buttons.remove.description"));
         meta.setLore(lore);
         removeBtn.setItemMeta(meta);
 
         meta = doneBtn.getItemMeta();
-        meta.setDisplayName("Done");
+        meta.setDisplayName(I18n.s("edit.buttons.done.title"));
         doneBtn.setItemMeta(meta);
 
         changeState(State.BUY);
@@ -91,7 +91,7 @@ public class ShopEditor implements InventoryHolder {
             ItemMeta meta = it.getItemMeta();
             if (st == State.REMOVE) {
                 List<String> lore = new ArrayList<String>();
-                lore.add(""+ChatColor.RESET+ChatColor.RED+"Click to remove");
+                lore.add(""+ChatColor.RESET+ChatColor.RED+I18n.s("edit.remove.description"));
                 meta.setLore(lore);
             } else {
                 meta.setLore(d.toLore(shop.isAdmin()));
@@ -139,7 +139,7 @@ public class ShopEditor implements InventoryHolder {
             shop.deals.remove(d);
             shop.refreshView();
             viewInv.setItem(slot, null);
-            Chat.s(player, "Removed deal.");
+            Chat.s(player, I18n.s("edit.remove.confirm"));
         }
     }
 
@@ -233,7 +233,7 @@ public class ShopEditor implements InventoryHolder {
         shop.deals.add(d);
         shop.refreshView();
         refreshView();
-        Chat.s(player, "Added deal.");
+        Chat.s(player, I18n.s("edit.add.confirm"));
     }
 
     private void editBuyPrice(Player player, Deal deal, ItemStack item) {
@@ -241,7 +241,7 @@ public class ShopEditor implements InventoryHolder {
             deal.setBuyPrice(item.clone());
             shop.refreshView();
             refreshView();
-            Chat.s(player, "Changed buy price to "+ CurrencyManager.getInstance().itemToPrice(item)+".");
+            Chat.s(player, I18n.s("edit.buy.confirm", CurrencyManager.getInstance().itemToPrice(item)));
         }
     }
 
@@ -250,7 +250,7 @@ public class ShopEditor implements InventoryHolder {
             deal.setSellPrice(item.clone());
             shop.refreshView();
             refreshView();
-            Chat.s(player, "Changed sell price to "+ CurrencyManager.getInstance().itemToPrice(item)+".");
+            Chat.s(player, I18n.s("edit.sell.confirm", CurrencyManager.getInstance().itemToPrice(item)));
         }
     }
 
@@ -258,7 +258,7 @@ public class ShopEditor implements InventoryHolder {
         deal.getItem().setAmount(item.getAmount());
         shop.refreshView();
         refreshView();
-        Chat.s(player, "Changed amount to "+item.getAmount()+".");
+        Chat.s(player, I18n.s("edit.amount.confirm", item.getAmount()));
     }
 
     public void onInventoryDrag(InventoryDragEvent event) {

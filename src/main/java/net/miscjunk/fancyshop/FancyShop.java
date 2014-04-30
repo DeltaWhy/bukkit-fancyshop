@@ -46,6 +46,7 @@ public class FancyShop extends JavaPlugin implements Listener {
         allowHoppersIn = this.getConfig().getBoolean("allow-hoppers-in");
         getServer().getPluginManager().registerEvents(this, this);
         cmdExecutor = new FancyShopCommandExecutor(this);
+        I18n.init(this);
         CurrencyManager.init(this);
         getCommand("fancyshop").setExecutor(cmdExecutor);
         ShopRepository.init(this);
@@ -55,6 +56,8 @@ public class FancyShop extends JavaPlugin implements Listener {
         } catch (IOException e) {
             Bukkit.getLogger().info("Failed to send metrics");
         }
+        Bukkit.getLogger().info("Locale: "+I18n.getLocale());
+        Bukkit.getLogger().info("Translator: "+I18n.s("translator"));
     }
 
     @EventHandler(priority = EventPriority.LOW)
@@ -63,10 +66,10 @@ public class FancyShop extends JavaPlugin implements Listener {
         Inventory inv = ((InventoryHolder)event.getClickedBlock().getState()).getInventory();
         if (event.getPlayer().isSneaking()) {
             if (Shop.isShop(inv)) {
-                Shop shop = Shop.fromInventory(inv, event.getPlayer().getUniqueId(), event.getPlayer().getName()+"'s Shop");
+                Shop shop = Shop.fromInventory(inv, event.getPlayer().getUniqueId());
                 if (!shop.getOwner().equals(event.getPlayer().getUniqueId()) && !event.getPlayer().hasPermission("fancyshop.open")) {
                     event.setCancelled(true);
-                    Chat.e(event.getPlayer(), "You don't have permission to open this shop chest.");
+                    Chat.e(event.getPlayer(), I18n.s("open.permission"));
                 }
             }
         } else {
@@ -84,7 +87,7 @@ public class FancyShop extends JavaPlugin implements Listener {
                             shop.open(p);
                         }
                     } else {
-                        Chat.e(p, "You don't have permission!");
+                        Chat.e(p, I18n.s("use.permission"));
                     }
                 }
             }
@@ -141,15 +144,15 @@ public class FancyShop extends JavaPlugin implements Listener {
             if (allowBreak) {
                 Shop shop = Shop.fromInventory(inv);
                 if (!shop.getOwner().equals(player.getUniqueId()) && !player.hasPermission("fancyshop.remove")) {
-                    Chat.e(player, "You don't have permission to break that.");
+                    Chat.e(player, I18n.s("break.permission"));
                     event.setCancelled(true);
                 } else {
                     ShopRepository.remove(shop);
                     Shop.removeShop(shop.getLocation());
-                    Chat.s(player, "Shop removed.");
+                    Chat.s(player, I18n.s("break.confirm"));
                 }
             } else {
-                Chat.e(player, "You can't break a shop chest. First remove the shop with /fancyshop remove.");
+                Chat.e(player, I18n.s("break.remove"));
                 event.setCancelled(true);
             }
         }
@@ -193,7 +196,7 @@ public class FancyShop extends JavaPlugin implements Listener {
             Shop shop = Shop.fromInventory(inv);
             if (shop.getOwner().equals(event.getPlayer().getUniqueId())) return; // we'll assume they know what they're doing
             event.setCancelled(true);
-            Chat.e(event.getPlayer(), "You can't place that here.");
+            Chat.e(event.getPlayer(), I18n.s("place.deny"));
         } else if (event.getBlock().getType() == Material.CHEST || event.getBlock().getType() == Material.TRAPPED_CHEST) {
             Inventory inv = ((InventoryHolder)event.getBlock().getState()).getInventory();
             if (!(inv instanceof DoubleChestInventory)) return;
@@ -206,7 +209,7 @@ public class FancyShop extends JavaPlugin implements Listener {
             } else {
                 return;
             }
-            Chat.s(event.getPlayer(), "Extended shop.");
+            Chat.s(event.getPlayer(), I18n.s("place.confirm"));
             ShopRepository.remove(shop);
             Shop.removeShop(shop.getLocation());
             Shop.removeShop(new ShopLocation(dc.getHolder().getLocation()));
