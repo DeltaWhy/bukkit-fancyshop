@@ -143,14 +143,9 @@ public class FancyShop extends JavaPlugin implements Listener {
             Player player = event.getPlayer();
             if (allowBreak) {
                 Shop shop = Shop.fromInventory(inv);
-                if (!shop.getOwner().equals(player.getUniqueId()) && !player.hasPermission("fancyshop.remove")) {
-                    Chat.e(player, I18n.s("break.permission"));
-                    event.setCancelled(true);
-                } else {
-                    ShopRepository.remove(shop);
-                    Shop.removeShop(shop.getLocation());
-                    Chat.s(player, I18n.s("break.confirm"));
-                }
+                ShopRepository.remove(shop);
+                Shop.removeShop(shop.getLocation());
+                Chat.s(player, I18n.s("break.confirm"));
             } else {
                 Chat.e(player, I18n.s("break.remove"));
                 event.setCancelled(true);
