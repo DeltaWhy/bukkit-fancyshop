@@ -91,3 +91,96 @@ en_US:
         main: "/fancyshop: Create and manage shops.\n    /fancyshop create - Create a new shop.\n    /fancyshop remove - Remove a shop."
         setadmin: "    /fancyshop setadmin true - Make a shop an admin shop.\n    /fancyshop setadmin false - Make a shop a normal shop."
         currency: "    /fancyshop currency <name> - Add the held item as a custom currency."
+es_ES:
+    translator: MrCobayo
+    break:
+        confirm: "Shop removido."
+        permission: "No tienes permiso para romper esto."
+        remove: "No puedes romper un shop. Primero utiliza /fancyshop remove."
+    place:
+        confirm: "Shop extendido."
+        deny: "No puedes colocar esto aqui."
+    open:
+        permission: "No tienes permiso para abrir un shop."
+    use:
+        permission: "No tienes permiso para usar un shop."
+    create:
+        confirm: "Shop creado con exito."
+        confirm2: "Has click derecho con un palo en tu mano sobre el shop para visualizarlo como un cliente."
+        confirm3: "Agachate y has click derecho sobre el shop para editar el stock."
+        exists: "Este cofre ya es un shop!"
+        permission: "No tienes permiso!"
+        prompt: "Has click derecho en un cofre para convertirlo en un shop."
+        region: "No puedes crear shops aqui."
+        usage: "Utiliza: /fancyshop create"
+    currency:
+        confirm: "Acabas de crear una nueva moneda: %s."
+        empty: "No estas sosteniendo nada!"
+        exists: "Este nombre ya es una moneda, utiliza otro!"
+        permission: "No tienes permiso!"
+        usage: "Utiliza: /fancyshop moneda <nombre>"
+    remove:
+        confirm: "Shop removido."
+        no-shop: "Esto no es un shop!"
+        owner: "Este shop no es tuyo!"
+        permission: "No tienes permiso!"
+        prompt: "Has click sobre uno de tus shops para quitarlo."
+        usage: "Utiliza: /fancyshop remove"
+    setadmin:
+        confirm-false: "Cambiar a shop normal."
+        confirm-true: "Cambiar a shop de administrador."
+        no-shop: "Esto no es un shop!"
+        permission: "No tienes permiso!"
+        prompt-false: "Has click derecho sobre un shop para volverlo normal."
+        prompt-true: "Has click derecho sobre un shop para convertirlo en un shop de administrador."
+        usage: "Utiliza: /fancyshop setadmin true|false"
+    buy:
+        enough: "No tienes suficiente dinero!"
+        room: "El shop no tiene suficiente espacio para almacenar mas dinero."
+        stock: "Fuera de stock."
+    sell:
+        enough: "No tienes suficiente!"
+        room: "Este shop no tiene mas espacio."
+        stock: "Este shop se ha quedado sin dinero."
+    edit:
+        title: "Editar shop"
+        add:
+            confirm: "Agregar articulo."
+        buy:
+            confirm: "Cambiaste el precio de compra a %s."
+        amount:
+            confirm: "Cambiaste la cantidad en venta a %d."
+        sell:
+            confirm: "Cambiaste el precio de venta a %s."
+        remove:
+            confirm: "Quitaste un articulo."
+            description: "Clickea para quitar"
+        buttons:
+            inventory:
+                title: "Inventario"
+                description: "Clickea para acceder al shop"
+            buy:
+                title: "Editando precios de compra"
+                description: "Clickea para cambiar los precios de venta"
+            sell:
+                title: "Editando los precios de venta"
+                description: "Clickea para cambiar los precios de compra"
+            remove:
+                title: "Quitar"
+                description: "Clickea para remover un articulo"
+            done:
+                title: "Hecho"
+    deal:
+        buy: "Comprar: %s"
+        sell: "Vender: %s"
+        stock: "%d en stock"
+        no-stock: "Fuera de stock!"
+        buying: "Comprando %d"
+        not-buying: "No estas comprando nada"
+        no-price: "Precio no definido o invalido"
+    shop:
+        default-name: "%s's Shop"
+    usage:
+        main: "/fancyshop: Crea y administra shops.\n    /fancyshop create - Crea un nuevo shop.\n    /fancyshop remove - Quita un shop."
+        setadmin: "    /fancyshop setadmin true - Crea un shop de administrador.\n    /fancyshop setadmin false - Crea un shop normal."
+        currency: "    /fancyshop currency <name> - Agrega el articulo de tu mano como moneda."
