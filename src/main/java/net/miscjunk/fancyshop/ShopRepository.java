@@ -53,40 +53,39 @@ public class ShopRepository {
             if (version > 3) {
                 throw new RuntimeException("Database is newer than plugin version");
             }
-            if (version == 0) {
-                stmt.execute("CREATE TABLE shops (" +
-                        "location TEXT NOT NULL," +
-                        "owner TEXT NOT NULL," +
-                        "PRIMARY KEY (location)" +
-                        ")");
-                stmt.execute("CREATE TABLE deals (" +
-                        "id INTEGER PRIMARY KEY AUTOINCREMENT," +
-                        "shop_id INT NOT NULL," +
-                        "item TEXT NOT NULL," +
-                        "buy_price TEXT," +
-                        "sell_price TEXT," +
-                        "FOREIGN KEY (shop_id) REFERENCES shops(location)" +
-                        ")");
-                stmt.execute("PRAGMA user_version=1");
-            }
-            if (version == 1) {
-                stmt.execute("ALTER TABLE shops ADD COLUMN is_admin INT NOT NULL DEFAULT 0");
-                stmt.execute("PRAGMA user_version=2");
-            }
-            if (version == 2) {
-                stmt.execute("ALTER TABLE shops ADD COLUMN name TEXT NOT NULL DEFAULT ''");
-                rs = stmt.executeQuery("SELECT * FROM shops");
-                while (rs.next()) {
-                    String ownerName = rs.getString("owner");
-                    UUID ownerId = plugin.getServer().getOfflinePlayer(ownerName).getUniqueId();
-                    String name = I18n.s("shop.default-name", ownerName);
-                    PreparedStatement update = db.prepareStatement("UPDATE shops SET owner=?, name=? WHERE location=?");
-                    update.setString(1, ownerId.toString());
-                    update.setString(2, name);
-                    update.setString(3, rs.getString("location"));
-                    update.execute();
-                }
-                stmt.execute("PRAGMA user_version=3");
+            switch (version) {
+                case 0:
+                    stmt.execute("CREATE TABLE shops (" +
+                            "location TEXT NOT NULL," +
+                            "owner TEXT NOT NULL," +
+                            "PRIMARY KEY (location)" +
+                            ")");
+                    stmt.execute("CREATE TABLE deals (" +
+                            "id INTEGER PRIMARY KEY AUTOINCREMENT," +
+                            "shop_id INT NOT NULL," +
+                            "item TEXT NOT NULL," +
+                            "buy_price TEXT," +
+                            "sell_price TEXT," +
+                            "FOREIGN KEY (shop_id) REFERENCES shops(location)" +
+                            ")");
+                    stmt.execute("PRAGMA user_version=1");
+                case 1:
+                    stmt.execute("ALTER TABLE shops ADD COLUMN is_admin INT NOT NULL DEFAULT 0");
+                    stmt.execute("PRAGMA user_version=2");
+                case 2:
+                    stmt.execute("ALTER TABLE shops ADD COLUMN name TEXT NOT NULL DEFAULT ''");
+                    rs = stmt.executeQuery("SELECT * FROM shops");
+                    while (rs.next()) {
+                        String ownerName = rs.getString("owner");
+                        UUID ownerId = plugin.getServer().getOfflinePlayer(ownerName).getUniqueId();
+                        String name = I18n.s("shop.default-name", ownerName);
+                        PreparedStatement update = db.prepareStatement("UPDATE shops SET owner=?, name=? WHERE location=?");
+                        update.setString(1, ownerId.toString());
+                        update.setString(2, name);
+                        update.setString(3, rs.getString("location"));
+                        update.execute();
+                    }
+                    stmt.execute("PRAGMA user_version=3");
             }
         } else {
             throw new RuntimeException("Couldn't get database schema version");
