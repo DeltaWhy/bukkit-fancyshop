@@ -91,7 +91,7 @@ en_US:
         main: "/fancyshop: Create and manage shops.\n    /fancyshop create - Create a new shop.\n    /fancyshop remove - Remove a shop."
         setadmin: "    /fancyshop setadmin true - Make a shop an admin shop.\n    /fancyshop setadmin false - Make a shop a normal shop."
         currency: "    /fancyshop currency <name> - Add the held item as a custom currency."
-es_ES:
+es_AR:
     translator: MrCobayo
     break:
         confirm: "Shop removido."

@@ -54,6 +54,7 @@ public class ShopRepository {
                 throw new RuntimeException("Database is newer than plugin version");
             }
             switch (version) {
+                /* Fall-through is intentional, we want ALL updates! */
                 case 0:
                     stmt.execute("CREATE TABLE shops (" +
                             "location TEXT NOT NULL," +
