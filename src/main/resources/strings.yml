@@ -41,6 +41,13 @@ en_US:
         prompt-false: "Right-click a shop to make it a normal shop."
         prompt-true: "Right-click a shop to make it an admin shop."
         usage: "Usage: /fancyshop setadmin true|false"
+    rename:
+        confirm: "Shop renamed to \"%s\"."
+        no-shop: "That's not a shop!"
+        owner: "That's not your shop!"
+        permission: "You don't have permission!"
+        prompt: "Right-click a shop to rename it."
+        usage: "Usage: /fancyshop rename <name>"
     buy:
         enough: "You don't have enough!"
         room: "Not enough room in shop."
@@ -88,7 +95,11 @@ en_US:
     shop:
         default-name: "%s's Shop"
     usage:
-        main: "/fancyshop: Create and manage shops.\n    /fancyshop create - Create a new shop.\n    /fancyshop remove - Remove a shop."
+        main: |
+            /fancyshop: Create and manage shops.
+                /fancyshop create - Create a new shop.
+                /fancyshop remove - Remove a shop.
+                /fancyshop rename <name> - Rename a shop.
         setadmin: "    /fancyshop setadmin true - Make a shop an admin shop.\n    /fancyshop setadmin false - Make a shop a normal shop."
         currency: "    /fancyshop currency <name> - Add the held item as a custom currency."
 es_AR:
@@ -118,7 +129,7 @@ es_AR:
         empty: "No estas sosteniendo nada!"
         exists: "Este nombre ya es una moneda, utiliza otro!"
         permission: "No tienes permiso!"
-        usage: "Utiliza: /fancyshop moneda <nombre>"
+        usage: "Utiliza: /fancyshop currency <nombre>"
     remove:
         confirm: "Shop removido."
         no-shop: "Esto no es un shop!"
@@ -181,6 +192,10 @@ es_AR:
     shop:
         default-name: "%s's Shop"
     usage:
-        main: "/fancyshop: Crea y administra shops.\n    /fancyshop create - Crea un nuevo shop.\n    /fancyshop remove - Quita un shop."
+        main: |
+            /fancyshop: Crea y administra shops.
+                /fancyshop create - Crea un nuevo shop.
+                /fancyshop remove - Quita un shop.
+                /fancyshop rename <nombre> - Cargar nombre de un shop.
         setadmin: "    /fancyshop setadmin true - Crea un shop de administrador.\n    /fancyshop setadmin false - Crea un shop normal."
-        currency: "    /fancyshop currency <name> - Agrega el articulo de tu mano como moneda."
+        currency: "    /fancyshop currency <nombre> - Agrega el articulo de tu mano como moneda."

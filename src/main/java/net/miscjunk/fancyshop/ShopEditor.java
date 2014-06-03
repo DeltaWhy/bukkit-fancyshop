@@ -151,6 +151,7 @@ public class ShopEditor implements InventoryHolder {
         Player p = (Player)event.getWhoClicked();
         if (event.getRawSlot() >= 0 && event.getRawSlot() <= LAST_DEAL) {
             // click in shop
+            p.sendMessage(event.getAction().toString());
             switch (event.getAction()) {
                 case PICKUP_ALL:
                 case PICKUP_HALF:

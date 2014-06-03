@@ -128,6 +128,8 @@ public class Shop implements InventoryHolder {
 
     public void setName(String name) {
         this.name = name;
+        viewInv = Bukkit.createInventory(this, 27, name);
+        refreshView();
     }
 
     public UUID getOwner() {
@@ -294,6 +296,7 @@ public class Shop implements InventoryHolder {
                     overflow = whoClicked.getInventory().addItem(deal.getSellPrice().clone());
                     for (ItemStack it : overflow.values()) {
                         if (cursor == null || cursor.getAmount() == 0) {
+                            cursor = it;
                             view.setCursor(it);
                         } else {
                             whoClicked.getWorld().dropItemNaturally(whoClicked.getLocation(), it);

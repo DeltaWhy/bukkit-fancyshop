@@ -17,18 +17,18 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class FancyShopCommandExecutor implements CommandExecutor {
-    enum PendingCommand { CREATE, REMOVE, ADMIN_ON, ADMIN_OFF };
     private FancyShop plugin;
     boolean flagsInstalled = false;
-    Map<String,PendingCommand> pending;
-    Map<String,BukkitTask> tasks;
+    Map<UUID,PendingCommand> pending;
+    Map<UUID,BukkitTask> tasks;
 
     public FancyShopCommandExecutor(FancyShop plugin) {
         this.plugin = plugin;
-        this.pending = new HashMap<String, PendingCommand>();
-        this.tasks = new HashMap<String, BukkitTask>();
+        this.pending = new HashMap<UUID, PendingCommand>();
+        this.tasks = new HashMap<UUID, BukkitTask>();
         flagsInstalled = Bukkit.getServer().getPluginManager().isPluginEnabled("Flags");
         if (flagsInstalled) {
             Bukkit.getLogger().info("Found Flags, enabling region support");
@@ -57,6 +57,8 @@ public class FancyShopCommandExecutor implements CommandExecutor {
             setAdmin(p, cmd, label, args);
         } else if (args[0].equals("currency")) {
             currency(p, cmd, label, args);
+        } else if (args[0].equals("rename")) {
+            rename(p, cmd, label, args);
         } else {
             printUsage(sender);
         }
@@ -64,12 +66,13 @@ public class FancyShopCommandExecutor implements CommandExecutor {
     }
 
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (!pending.containsKey(event.getPlayer().getName())) return;
-        switch (pending.get(event.getPlayer().getName())) {
+        if (!pending.containsKey(event.getPlayer().getUniqueId())) return;
+        PendingCommand cmd = pending.get(event.getPlayer().getUniqueId());
+        switch (cmd.getType()) {
             case CREATE:
                 if (event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof InventoryHolder) {
                     event.setCancelled(true);
-                    create(event.getPlayer(), ((InventoryHolder)event.getClickedBlock().getState()).getInventory());
+                    create(event.getPlayer(), ((InventoryHolder) event.getClickedBlock().getState()).getInventory());
                 }
                 break;
             case REMOVE:
@@ -78,16 +81,17 @@ public class FancyShopCommandExecutor implements CommandExecutor {
                     remove(event.getPlayer(), ((InventoryHolder) event.getClickedBlock().getState()).getInventory());
                 }
                 break;
-            case ADMIN_ON:
+            case SETADMIN:
                 if (event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof InventoryHolder) {
                     event.setCancelled(true);
-                    setAdmin(event.getPlayer(), ((InventoryHolder)event.getClickedBlock().getState()).getInventory(), true);
+                    setAdmin(event.getPlayer(), ((InventoryHolder)event.getClickedBlock().getState()).getInventory(),
+                            cmd.getArgs()[0].equals("true"));
                 }
                 break;
-            case ADMIN_OFF:
+            case RENAME:
                 if (event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof InventoryHolder) {
                     event.setCancelled(true);
-                    setAdmin(event.getPlayer(), ((InventoryHolder)event.getClickedBlock().getState()).getInventory(), false);
+                    rename(event.getPlayer(), ((InventoryHolder) event.getClickedBlock().getState()).getInventory(), cmd.getArgs());
                 }
                 break;
         }
@@ -125,6 +129,24 @@ public class FancyShopCommandExecutor implements CommandExecutor {
         clearPending(player);
     }
 
+    private void rename(Player player, Inventory inv, String[] args) {
+        if (Shop.isShop(inv)) {
+            Shop shop = Shop.fromInventory(inv);
+            if (!shop.getOwner().equals(player.getUniqueId())) {
+                Chat.e(player, I18n.s("rename.owner"));
+            } else {
+                String name = args[1];
+                for (int i=2; i < args.length; i++) { name += " "+args[i]; }
+                shop.setName(name);
+                ShopRepository.store(shop);
+                Chat.s(player, I18n.s("rename.confirm", name));
+            }
+        } else {
+            Chat.e(player, I18n.s("rename.no-shop"));
+        }
+        clearPending(player);
+    }
+
     private void setAdmin(Player player, Inventory inv, boolean admin) {
         if (!Shop.isShop(inv)) {
             Chat.e(player, I18n.s("setadmin.no-shop"));
@@ -133,9 +155,9 @@ public class FancyShopCommandExecutor implements CommandExecutor {
             shop.setAdmin(admin);
             ShopRepository.store(shop);
             if (admin) {
-                Chat.s(player, "setadmin.confirm-true");
+                Chat.s(player, I18n.s("setadmin.confirm-true"));
             } else {
-                Chat.s(player, "setadmin.confirm-false");
+                Chat.s(player, I18n.s("setadmin.confirm-false"));
             }
         }
         clearPending(player);
@@ -150,7 +172,7 @@ public class FancyShopCommandExecutor implements CommandExecutor {
             return;
         }
         Chat.i(player, I18n.s("remove.prompt"));
-        setPending(player, PendingCommand.REMOVE);
+        setPending(player, new PendingCommand(PendingCommand.Type.REMOVE));
     }
 
     private void create(Player player, Command cmd, String label, String[] args) {
@@ -162,7 +184,19 @@ public class FancyShopCommandExecutor implements CommandExecutor {
             return;
         }
         Chat.i(player, I18n.s("create.prompt"));
-        setPending(player, PendingCommand.CREATE);
+        setPending(player, new PendingCommand(PendingCommand.Type.CREATE));
+    }
+
+    private void rename(Player player, Command cmd, String label, String[] args) {
+        if (!player.hasPermission("fancyshop.rename")) {
+            Chat.e(player, I18n.s("rename.permission"));
+            return;
+        } else if (args.length < 2) {
+            Chat.e(player, I18n.s("rename.usage"));
+            return;
+        }
+        Chat.i(player, I18n.s("rename.prompt"));
+        setPending(player, new PendingCommand(PendingCommand.Type.RENAME, args));
     }
 
     private void setAdmin(Player player, Command cmd, String label, String[] args) {
@@ -172,10 +206,10 @@ public class FancyShopCommandExecutor implements CommandExecutor {
         }
         if (args.length == 1 || args.length == 2 && args[1].equals("true")) {
             Chat.i(player, I18n.s("setadmin.prompt-true"));
-            setPending(player, PendingCommand.ADMIN_ON);
+            setPending(player, new PendingCommand(PendingCommand.Type.SETADMIN, "true"));
         } else if (args.length == 2 && args[1].equals("false")) {
             Chat.i(player, I18n.s("setadmin.prompt-false"));
-            setPending(player, PendingCommand.ADMIN_OFF);
+            setPending(player, new PendingCommand(PendingCommand.Type.SETADMIN, "false"));
         } else {
             Chat.e(player, I18n.s("setadmin.usage"));
         }
@@ -186,11 +220,13 @@ public class FancyShopCommandExecutor implements CommandExecutor {
             Chat.e(player, I18n.s("currency.permission"));
             return;
         }
-        if (args.length != 2) {
+        if (args.length < 2) {
             Chat.e(player, I18n.s("currency.usage"));
             return;
         }
-        String name = args[1].trim();
+        String name = args[1];
+        for (int i=2; i < args.length; i++) { name += " "+args[i]; }
+
         if (CurrencyManager.getInstance().isCustomCurrency(name)) {
             Chat.e(player, I18n.s("currency.exists"));
             return;
@@ -232,31 +268,31 @@ public class FancyShopCommandExecutor implements CommandExecutor {
     }
 
     private void setPending(Player player, PendingCommand cmd) {
-        final String name = player.getName();
-        if (tasks.containsKey(name)) {
-            BukkitTask task = tasks.get(name);
+        final UUID id = player.getUniqueId();
+        if (tasks.containsKey(id)) {
+            BukkitTask task = tasks.get(id);
             if (task != null) task.cancel();
         }
-        pending.put(name, cmd);
-        tasks.put(name, new BukkitRunnable() {
+        pending.put(id, cmd);
+        tasks.put(id, new BukkitRunnable() {
             public void run() {
-                pending.remove(name);
+                pending.remove(id);
             }
         }.runTaskLater(plugin, 60 * 20));
     }
 
     private void clearPending(Player player) {
-        final String name = player.getName();
-        if (tasks.containsKey(name)) {
-            BukkitTask task = tasks.get(name);
+        final UUID id = player.getUniqueId();
+        if (tasks.containsKey(id)) {
+            BukkitTask task = tasks.get(id);
             if (task != null) task.cancel();
-            tasks.remove(name);
+            tasks.remove(id);
         }
-        if (pending.containsKey(name)) pending.remove(name);
+        if (pending.containsKey(id)) pending.remove(id);
     }
 
     public boolean hasPending(Player player) {
-        return pending.containsKey(player.getName());
+        return pending.containsKey(player.getUniqueId());
     }
 
     public void printUsage(CommandSender sender) {

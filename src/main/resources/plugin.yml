@@ -16,6 +16,9 @@ permissions:
     fancyshop.create.anywhere:
         description: Create a shop, bypassing region permissions.
         default: op
+    fancyshop.rename:
+        description: Change the name of your shop.
+        default: true
     fancyshop.use:
         description: Use other people's shops.
         default: true
