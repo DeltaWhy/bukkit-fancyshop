@@ -3,6 +3,7 @@ package net.miscjunk.fancyshop;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.enchantments.Enchantment;
@@ -106,7 +107,17 @@ public class Shop implements InventoryHolder {
     }
 
     public static void removeShop(ShopLocation loc) {
-        if (shopMap != null && shopMap.containsKey(loc)) shopMap.remove(loc);
+        if (shopMap != null && shopMap.containsKey(loc)) {
+            shopMap.remove(loc);
+        }
+    }
+
+    public static void removeShopsInWorld(World w) {
+        if (shopMap == null) return;
+        String world = w.getName();
+        for (ShopLocation l : shopMap.keySet()) {
+            if (l.getWorld().equals(world)) removeShop(l);
+        }
     }
 
     public void open(Player player) {
