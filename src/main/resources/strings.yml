@@ -70,6 +70,9 @@ en_US:
             confirm: "Removed deal."
             description: "Click to remove"
         buttons:
+            preview:
+                title: "Preview"
+                description: "Click to view as a customer"
             inventory:
                 title: "Inventory"
                 description: "Click to access shop chest"

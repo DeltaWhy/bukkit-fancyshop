@@ -5,7 +5,8 @@ allow-explosion: false
 # Allow players to break shops without removing. Players still need the fancyshop.remove permission.
 # You should probably leave this false so players can't accidentally break their own shop and lose all their work.
 allow-break: false
-# Allow stealing from shops with hoppers. I don't know why you would want this.
+# Allow stealing from shops with hoppers. This may reduce lag on CraftBukkit if you trust your players,
+#     but should not be necessary on Spigot since it adds a delay between checks.
 allow-hoppers: false
 # Allow restocking a shop with hoppers/droppers.
 allow-hoppers-in: true
