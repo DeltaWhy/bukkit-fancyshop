@@ -41,7 +41,7 @@ public class ShopEditor implements InventoryHolder {
         chestBtn = new ItemStack(Material.CHEST, 1);
         buyBtn = new ItemStack(Material.WOOL, 1, (short)5); //green
         sellBtn = new ItemStack(Material.WOOL, 1, (short)11); //blue
-        removeBtn = new ItemStack(Material.FIRE, 1);
+        removeBtn = new ItemStack(Material.WOOL, 1, (short)14); //red
         doneBtn = new ItemStack(Material.WOOL, 1, (short)5);
 
         ItemMeta meta = chestBtn.getItemMeta();
@@ -151,7 +151,6 @@ public class ShopEditor implements InventoryHolder {
         Player p = (Player)event.getWhoClicked();
         if (event.getRawSlot() >= 0 && event.getRawSlot() <= LAST_DEAL) {
             // click in shop
-            p.sendMessage(event.getAction().toString());
             switch (event.getAction()) {
                 case PICKUP_ALL:
                 case PICKUP_HALF:

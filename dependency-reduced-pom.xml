@@ -46,7 +46,7 @@
   <repositories>
     <repository>
       <id>bukkit-repo</id>
-      <url>http://repo.bukkit.org/content/groups/public</url>
+      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
     </repository>
     <repository>
       <id>Plugin Metrics</id>
@@ -61,7 +61,7 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.7.9-R0.2</version>
+      <version>1.8-R0.1-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
