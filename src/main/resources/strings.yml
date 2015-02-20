@@ -225,41 +225,41 @@ pl_PL:
         region: "Nie mozesz tworzyc tutaj sklepow."
         usage: "Uzycie: /fancyshop create"
     currency:
-        confirm: "Created currency %s."
-        empty: "You aren't holding anything!"
-        exists: "That name is already a currency!"
-        permission: "You don't have permission!"
-        usage: "Usage: /fancyshop currency <name>"
+        confirm: "Stworzono walute %s."
+        empty: "Nic nie trzymasz!"
+        exists: "Juz istnieje waluta o takiej nazwie!"
+        permission: "Nie masz uprawnien!"
+        usage: "Uzycie: /fancyshop currency <nazwa>"
     remove:
-        confirm: "Shop removed."
-        no-shop: "That's not a shop!"
-        owner: "That's not your shop!"
-        permission: "You don't have permission!"
-        prompt: "Right-click a shop to remove it."
-        usage: "Usage: /fancyshop remove"
+        confirm: "Sklep usuniety."
+        no-shop: "To nie jest sklep!"
+        owner: "To nie twoj sklep!"
+        permission: "Nie masz uprawnien!"
+        prompt: "Nacisnij sklep prawym przyciskiem myszki, aby go usunac."
+        usage: "Uzycie: /fancyshop remove"
     setadmin:
-        confirm-false: "Set to normal shop."
-        confirm-true: "Set to admin shop."
-        no-shop: "That's not a shop!"
-        permission: "You don't have permission!"
-        prompt-false: "Right-click a shop to make it a normal shop."
-        prompt-true: "Right-click a shop to make it an admin shop."
-        usage: "Usage: /fancyshop setadmin true|false"
+        confirm-false: "Od teraz ten sklep jest normalnym sklepem."
+        confirm-true: "Od teraz ten sklep jest sklepem administratora."
+        no-shop: "To nie jest sklep!"
+        permission: "Nie masz uprawnien!"
+        prompt-false: "Kliknij prawym przyciskiem myszki na sklep, aby zrobic go normalnym sklepem."
+        prompt-true: "Kliknij prawym przyciskiem myszki na sklep, aby zrobic go sklepem administratora."
+        usage: "Uzycie: /fancyshop setadmin true|false"
     rename:
-        confirm: "Shop renamed to \"%s\"."
-        no-shop: "That's not a shop!"
-        owner: "That's not your shop!"
-        permission: "You don't have permission!"
-        prompt: "Right-click a shop to rename it."
-        usage: "Usage: /fancyshop rename <name>"
+        confirm: "Zmieniono nazwe sklepu na \"%s\"."
+        no-shop: "To nie jest sklep!"
+        owner: "To nie twoj sklep!"
+        permission: "Nie masz uprawnien!"
+        prompt: "Kliknij sklep prawym przyciskiem myszki, aby zmienic jego nazwe."
+        usage: "Uzycie: /fancyshop rename <nazwa>"
     buy:
         enough: "Masz za malo!"
         room: "Brak miejsca w zaopatrzeniu skrzyni."
         stock: "Brak zasobow."
     sell:
-        enough: "You don't have enough!"
-        room: "Not enough room in shop."
-        stock: "The shop is out of money."
+        enough: "Masz za malo!"
+        room: "Magazyn sklepu jest pelny!"
+        stock: "W sklepie skonczyl sie ten przedmiot."
     edit:
         title: "Zarzadzaj sklepem"
         add:
@@ -300,12 +300,12 @@ pl_PL:
         not-buying: "Nie mozesz kupowac"
         no-price: "Brak ceny"
     shop:
-        default-name: "Sklep %sa"
+        default-name: "Sklep (wlasciciel: %s)"
     usage:
         main: |
             /fancyshop: Tworz i zarzadzaj sklepami.
                 /fancyshop create - Stworz nowy sklep.
                 /fancyshop remove - Usun sklep.
-                /fancyshop rename <name> - Zmien nazwe sklepu.
+                /fancyshop rename <nazwa> - Zmien nazwe sklepu.
         setadmin: "    /fancyshop setadmin true - Sklep z niskonczana iloscia zasobow.\n    /fancyshop setadmin false - Zrob sklep spowrotem normalnym sklepem."
-        currency: "    /fancyshop currency <name> - Add the held item as a custom currency."
+        currency: "    /fancyshop currency <nazwa> - Add the held item as a custom currency."
