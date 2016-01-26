@@ -242,7 +242,7 @@ public class FancyShop extends JavaPlugin implements Listener {
 
     private boolean canBeShop(Block block) {
         if (block == null) return false;
-        return block.getState() instanceof InventoryHolder;
+        return block.getType() == Material.CHEST;
     }
 }
 
