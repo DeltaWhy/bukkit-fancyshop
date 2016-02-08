@@ -17,6 +17,10 @@
             <id>flags-repo</id>
             <url>http://pages.suddenlink.net/alshain01/flags/repository</url>
         </repository>
+        <repository>
+            <id>dmulloy2-repo</id>
+            <url>http://repo.dmulloy2.net/content/groups/public/</url>
+        </repository>
     </repositories>
     <build>
         <finalName>${project.name}</finalName>
@@ -83,6 +87,11 @@
                     <artifactId>bukkit</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>3.6.4</version>
         </dependency>
     </dependencies>
 </project>

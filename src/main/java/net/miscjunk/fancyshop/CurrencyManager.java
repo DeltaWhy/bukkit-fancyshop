@@ -7,6 +7,12 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import com.comphenix.protocol.utility.MinecraftReflection;
+import com.comphenix.protocol.wrappers.nbt.NbtCompound;
+import com.comphenix.protocol.wrappers.nbt.NbtFactory;
+import com.comphenix.protocol.wrappers.nbt.io.NbtTextSerializer;
+
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +25,16 @@ public class CurrencyManager {
     boolean whitelist;
     Map<String,ItemStack> currencies;
     List<Integer> blacklist;
+    static boolean protocolInstall = false;
 
     public static void init(FancyShop plugin) {
         if (instance != null) throw new RuntimeException("CurrencyManager is already initialized");
         instance = new CurrencyManager(plugin);
+        protocolInstall = Bukkit.getServer().getPluginManager().isPluginEnabled("ProtocolLib");
+        if(protocolInstall)
+        	Bukkit.getLogger().info("Found ProtocolLib, enabling custom item data(NBT) support");
+        else
+        	Bukkit.getLogger().info("ProtocolLib is not installed, disabling custom item data(NBT) support");
     }
 
     public static CurrencyManager getInstance() {
@@ -101,18 +113,57 @@ public class CurrencyManager {
     public static String itemToString(ItemStack item) {
         YamlConfiguration c = new YamlConfiguration();
         c.set("item", item);
-        return c.saveToString();
+        String result = c.saveToString();
+        if(protocolInstall == true && item != null && item.hasItemMeta()) {
+        	result += "  NBTTag: '" + ProtocolLibHook.getNbtTextSerializer(item) + "'";
+        }
+        return result;
     }
 
     public static ItemStack stringToItem(String str) {
         YamlConfiguration c = new YamlConfiguration();
+        YamlConfiguration d = new YamlConfiguration();
+        String NBTTag;
+        NBTTag = str.replaceFirst("\n  ==: org.bukkit.inventory.ItemStack\n", "\n");
         try {
             c.loadFromString(str);
+            d.loadFromString(NBTTag);
         } catch(InvalidConfigurationException e) {
             return null;
         }
         Object o = c.get("item");
+        NBTTag = (String) d.get("item.NBTTag");
         if (!(o instanceof ItemStack)) return null;
-        return (ItemStack)o;
+        if (NBTTag == null || protocolInstall == false) return (ItemStack)o;
+        ItemStack item = ProtocolLibHook.setTagFromText((ItemStack)o, NBTTag);
+        return item;
     }
+}
+
+class ProtocolLibHook {
+	public static ItemStack getCraftItemStack(ItemStack stack) {
+		if (!MinecraftReflection.isCraftItemStack(stack))
+			return MinecraftReflection.getBukkitItemStack(stack);
+		else
+			return stack;
+	}
+	
+	public static String getNbtTextSerializer(ItemStack item) {
+        item = ProtocolLibHook.getCraftItemStack(item);
+    	NbtCompound tag = NbtFactory.asCompound(NbtFactory.fromItemTag(item));
+    	String textwrape = new NbtTextSerializer().serialize(tag);
+        return textwrape;	
+	}
+	
+	public static ItemStack setTagFromText(ItemStack item, String NBTTag) {
+		item = ProtocolLibHook.getCraftItemStack(item);
+        NbtCompound nbtstr = null;
+        try {
+			nbtstr = new NbtTextSerializer().deserializeCompound(NBTTag);
+		} catch (IOException e) {
+			return item;
+		}
+		NbtFactory.setItemTag(item, nbtstr);
+		return item;
+	}
 }
