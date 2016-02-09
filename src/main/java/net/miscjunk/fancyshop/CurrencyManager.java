@@ -141,29 +141,32 @@ public class CurrencyManager {
 }
 
 class ProtocolLibHook {
-	public static ItemStack getCraftItemStack(ItemStack stack) {
-		if (!MinecraftReflection.isCraftItemStack(stack))
-			return MinecraftReflection.getBukkitItemStack(stack);
-		else
-			return stack;
-	}
+    public static ItemStack getCraftItemStack(ItemStack stack) {
+        if (!MinecraftReflection.isCraftItemStack(stack))
+            return MinecraftReflection.getBukkitItemStack(stack);
+        else
+            return stack;
+    }
 	
-	public static String getNbtTextSerializer(ItemStack item) {
+    public static String getNbtTextSerializer(ItemStack item) {
         item = ProtocolLibHook.getCraftItemStack(item);
-    	NbtCompound tag = NbtFactory.asCompound(NbtFactory.fromItemTag(item));
-    	String textwrape = new NbtTextSerializer().serialize(tag);
+        NbtCompound tag = NbtFactory.asCompound(NbtFactory.fromItemTag(item));
+        String textwrape = new NbtTextSerializer().serialize(tag);
         return textwrape;	
-	}
-	
-	public static ItemStack setTagFromText(ItemStack item, String NBTTag) {
-		item = ProtocolLibHook.getCraftItemStack(item);
+    }
+
+    public static ItemStack setTagFromText(ItemStack item, String NBTTag) {
+        if(NBTTag.isEmpty())
+            return item;
+        item = ProtocolLibHook.getCraftItemStack(item);
         NbtCompound nbtstr = null;
         try {
-			nbtstr = new NbtTextSerializer().deserializeCompound(NBTTag);
-		} catch (IOException e) {
-			return item;
-		}
-		NbtFactory.setItemTag(item, nbtstr);
-		return item;
-	}
+            nbtstr = new NbtTextSerializer().deserializeCompound(NBTTag);
+        } catch (IOException e) {
+            return item;
+        }
+        if(!nbtstr.getKeys().isEmpty())        	
+            NbtFactory.setItemTag(item, nbtstr);
+        return item;
+    }
 }
