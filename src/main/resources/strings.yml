@@ -309,3 +309,110 @@ pl_PL:
                 /fancyshop rename <nazwa> - Zmien nazwe sklepu.
         setadmin: "    /fancyshop setadmin true - Sklep z niskonczana iloscia zasobow.\n    /fancyshop setadmin false - Zrob sklep spowrotem normalnym sklepem."
         currency: "    /fancyshop currency <nazwa> - Add the held item as a custom currency."
+zh_TW:
+    translator: YiFan
+    break:
+        confirm: "移除商店."
+        permission: "你沒有權限移除他."
+        remove: "你不能移除此商店，請先打指令/fancyshop remove."
+    place:
+        confirm: "擴展商店."
+        deny: "你不能在此擴展."
+    open:
+        permission: "你沒有權限打開此商店的設定介面."
+    use:
+        permission: "你沒有權限使用此商店."
+    create:
+        confirm: "創建商店."
+        confirm2: "拿木棒右鍵點擊你的商店來打開客戶介面."
+        confirm3: "潛行右鍵來打開庫存介面."
+        exists: "他已經是商店！!"
+        permission: "你沒有權限!"
+        prompt: "右鍵一個箱子來創造一個商店."
+        region: "你不能在此建造商店."
+        usage: "用法: /fancyshop create"
+    currency:
+        confirm: "建造貨幣: %s."
+        empty: "你沒有持有!"
+        exists: "你沒有權限!"
+        permission: "No tienes permiso!"
+        usage: "用法: /fancyshop currency <nombre>"
+    remove:
+        confirm: "移除商店."
+        no-shop: "他不是商店!"
+        owner: "這不是你的商店!"
+        permission: "你沒有權限!"
+        prompt: "右鍵商店來移除他."
+        usage: "用法: /fancyshop remove"
+    setadmin:
+        confirm-false: "設定成一般商店."
+        confirm-true: "設定成管理者商店."
+        no-shop: "他不是商店!"
+        permission: "你沒有權限!"
+        prompt-false: "右鍵一個商店來設定成一般商店."
+        prompt-true: "右鍵一個商店來設定成管理者商店."
+        usage: "用法: /fancyshop setadmin true|false"
+    rename:
+        confirm: "商店名稱改成 \"%s\"."
+        no-shop: "他不是商店!"
+        owner: "他不是你的商店!"
+        permission: "你沒有權限!"
+        prompt: "右鍵一個商店來重新命名."
+        usage: "用法: /fancyshop rename <name>"
+    buy:
+        enough: "你沒有足夠的!"
+        room: "沒有足夠的空間."
+        stock: "缺貨."
+    sell:
+        enough: "你沒有足夠的!"
+        room: "沒有足夠的空間."
+        stock: "商店的錢不夠."
+    edit:
+        title: "管理商店"
+        add:
+            confirm: "已增加商品."
+        buy:
+            confirm: "變更購買價格 %s."
+        amount:
+            confirm: "變更數量 %d."
+        sell:
+            confirm: "變更販賣價格 %s."
+        remove:
+            confirm: "已移除商品."
+            description: "點擊移除商品"
+        buttons:
+            preview:
+                title: "預覽"
+                description: "點擊預覽客戶視角"
+            inventory:
+                title: "庫存"
+                description: "點擊進入商店櫃子"
+            buy:
+                title: "設定購買價格"
+                description: "點擊設定購買價格"
+            sell:
+                title: "設定販售價格s"
+                description: "點擊設定販售價格"
+            remove:
+                title: "移除"
+                description: "點擊來移除商品"
+            done:
+                title: "完成"
+    deal:
+        buy: "購買: %s"
+        sell: "販售: %s"
+        stock: "%d 有現貨"
+        no-stock: "缺貨!"
+        buying: "已購買 %d"
+        not-buying: "不購買"
+        no-price: "價格未設定"
+    shop:
+        default-name: "%s 的商店"
+    usage:
+        main: |
+            /fancyshop: 創造或管理商店.
+                /fancyshop create - 創造一個新商店.
+                /fancyshop remove - 移除一個商店.
+                /fancyshop rename <nombre> - 重新命名商店.
+        setadmin: "    /fancyshop setadmin true - 設定成管理員商店.\n    /fancyshop setadmin false - 設定成一般商店."
+        currency: "    /fancyshop currency <nombre> - 把你目前拿著的物品設定成客製化貨幣."
