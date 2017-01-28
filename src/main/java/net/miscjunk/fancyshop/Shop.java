@@ -103,7 +103,9 @@ public class Shop implements InventoryHolder {
         }
         ShopLocation loc = new ShopLocation(l);
         if (!shopMap.containsKey(loc)) shopMap.put(loc, ShopRepository.load(loc, inv));
-        return (shopMap.get(loc) != null);
+        Shop ins = shopMap.get(loc);
+        if (ins != null) ins.updateSourceInv(inv);
+        return (ins != null);
     }
 
     public static void removeShop(ShopLocation loc) {
@@ -386,5 +388,9 @@ public class Shop implements InventoryHolder {
             }
         }
         event.setCancelled(!allow);
+    }
+
+    public void updateSourceInv(Inventory inv) {
+        this.sourceInv = inv;
     }
 }

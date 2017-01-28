@@ -109,20 +109,6 @@ public class FancyShop extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onChunkUnload(ChunkUnloadEvent event) {
-        Chunk c = event.getChunk();
-        for (BlockState b : c.getTileEntities()) {
-            Shop.removeShop(new ShopLocation(b.getLocation()));
-        }
-    }
-
-    @EventHandler
-    public void onWorldUnload(WorldUnloadEvent event) {
-        World w = event.getWorld();
-        Shop.removeShopsInWorld(w);
-    }
-
-    @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getInventory().getHolder() instanceof Shop) {
             ((Shop)event.getInventory().getHolder()).onInventoryClick(event);
