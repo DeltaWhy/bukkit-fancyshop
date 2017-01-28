@@ -114,14 +114,6 @@ public class Shop implements InventoryHolder {
         }
     }
 
-    public static void removeShopsInWorld(World w) {
-        if (shopMap == null) return;
-        String world = w.getName();
-        for (ShopLocation l : shopMap.keySet()) {
-            if (l.getWorld().equals(world)) removeShop(l);
-        }
-    }
-
     public void open(Player player) {
         player.openInventory(viewInv);
     }
