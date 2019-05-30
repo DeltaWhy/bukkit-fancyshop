@@ -103,20 +103,14 @@ public class Shop implements InventoryHolder {
         }
         ShopLocation loc = new ShopLocation(l);
         if (!shopMap.containsKey(loc)) shopMap.put(loc, ShopRepository.load(loc, inv));
-        return (shopMap.get(loc) != null);
+        Shop ins = shopMap.get(loc);
+        if (ins != null) ins.updateSourceInv(inv);
+        return (ins != null);
     }
 
     public static void removeShop(ShopLocation loc) {
         if (shopMap != null && shopMap.containsKey(loc)) {
             shopMap.remove(loc);
-        }
-    }
-
-    public static void removeShopsInWorld(World w) {
-        if (shopMap == null) return;
-        String world = w.getName();
-        for (ShopLocation l : shopMap.keySet()) {
-            if (l.getWorld().equals(world)) removeShop(l);
         }
     }
 
@@ -386,5 +380,9 @@ public class Shop implements InventoryHolder {
             }
         }
         event.setCancelled(!allow);
+    }
+
+    public void updateSourceInv(Inventory inv) {
+        this.sourceInv = inv;
     }
 }
